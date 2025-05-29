@@ -154,6 +154,7 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       app-sidebar-panel {
         display: block;
         position: relative;
+        height: 100%;
       }
 
       .resize-handle {
