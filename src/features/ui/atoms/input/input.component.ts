@@ -34,7 +34,7 @@ import {
           [readonly]="readonly"
           [value]="value"
           (input)="onInputChange($event)"
-          class="w-full rounded border border-elevation-border px-3 py-2 shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled"
+          class=""
         />
       </div>
     </div>

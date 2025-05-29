@@ -9,10 +9,10 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
   imports: [CommonModule, PropertyItemComponent],
   template: `
     <div
-      class="mb-2 rounded-lg border border-elevation-border bg-elevation-level-0 shadow-sm"
+      class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2 shadow-sm"
     >
       <div
-        class="flex cursor-pointer items-center justify-between rounded-t-lg border-b border-elevation-border bg-elevation-level-1 px-4 py-2"
+        class="flex cursor-pointer items-center justify-between rounded-t-md border-b border-elevation-border bg-elevation-level-1 px-4 py-2"
         (click)="toggleExpanded()"
       >
         <h3 class="text-sm font-medium text-text-shaded">{{ group.title }}</h3>

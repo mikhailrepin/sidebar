@@ -32,7 +32,7 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
           [disabled]="disabled"
           [value]="value"
           (change)="onChange($event)"
-          class="w-full appearance-none rounded border border-elevation-border bg-elevation-level-0 px-3 py-2 pr-8 shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled"
+          class="appearance-none bg-elevation-level-0 pr-8 shadow-sm"
         >
           <option
             *ngFor="let option of options"
