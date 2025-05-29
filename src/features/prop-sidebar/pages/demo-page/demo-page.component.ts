@@ -50,40 +50,33 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
         class="flex-1 flex flex-col gap-6 bg-zinc-50 p-6 h-full max-h-[calc(100vh-40px)] overflow-hidden"
       >
         <div class="flex flex-col">
-          <h1 class="text-2xl font-bold text-gray-800">
-            Демонстрация панели свойств
+          <h1 class="text-xl font-semibold text-gray-800">
+            Редактор панели свойств
           </h1>
-          <p class="text-gray-600 pt-2 pb-6">
-            Панель свойств генерируется динамически из JSON конфигурации. Ниже
-            вы можете редактировать JSON и применять изменения.
+          <p class="text-gray-600 pt-2">
+            Состав панели генерируется динамически из JSON конфигурации. Ниже вы
+            можете редактировать JSON и применять изменения.
           </p>
-          <div class="flex gap-4 mb-4">
-            <button
-              (click)="loadExampleIntoTextareaAndApply()"
-              class="rounded w-fit bg-sky-500 px-4 py-2 font-medium text-white hover:bg-sky-600 hover:cursor-pointer"
-            >
-              Загрузить пример
-            </button>
-            <button
-              (click)="applyJsonFromTextarea()"
-              class="rounded w-fit bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600 hover:cursor-pointer"
-            >
-              Применить конфигурацию
-            </button>
-          </div>
         </div>
 
-        <div class="flex flex-row gap-6 h-[calc(100%-160px)]">
-          <!-- JSON Editor -->
-          <div class="flex-1 flex flex-col gap-3 pb-2">
-            <h2 class="text-xl font-semibold text-gray-800">
-              Редактор конфигурации JSON:
-            </h2>
-            <div
-              #codemirrorHost
-              class="w-full h-full border border-gray-300 rounded-md overflow-hidden"
-            ></div>
-          </div>
+        <div
+          #codemirrorHost
+          class="w-full h-full border border-gray-300 rounded-md overflow-hidden"
+        ></div>
+
+        <div class="justify-end flex gap-4">
+          <button
+            (click)="loadExampleIntoTextareaAndApply()"
+            class="rounded w-fit px-4 py-2 font-medium text-zinc-800 border border-zinc-300 hover:cursor-pointer"
+          >
+            Сбросить конфигурацию
+          </button>
+          <button
+            (click)="applyJsonFromTextarea()"
+            class="rounded w-fit bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600 hover:cursor-pointer"
+          >
+            Применить конфигурацию
+          </button>
         </div>
       </section>
 
