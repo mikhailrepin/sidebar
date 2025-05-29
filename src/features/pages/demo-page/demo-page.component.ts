@@ -10,9 +10,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { SidebarPanelComponent } from '../../components/sidebar-panel/sidebar-panel.component';
-import { PropSidebarService } from '../../services/prop-sidebar.service';
-import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
+import { SidebarPanelComponent } from '../../prop-sidebar/components/sidebar-panel/sidebar-panel.component';
+import { PropSidebarService } from '../../prop-sidebar/services/prop-sidebar.service';
+import { SidebarPanelConfig } from '../../prop-sidebar/types/prop-sidebar.types';
 // import * as Prism from 'prismjs'; // No longer needed
 // import 'prismjs/components/prism-json'; // No longer needed
 
@@ -301,7 +301,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async loadExampleIntoTextareaAndApply(): Promise<void> {
     try {
-      const data = await import('../../data/example-panel.json');
+      const data = await import('../../prop-sidebar/data/example-panel.json');
       this.jsonEditText = JSON.stringify(data.default, null, 2);
       this.updateCodeMirrorContent(this.jsonEditText); // Update CodeMirror
       this.applyJsonFromTextarea();
