@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "prismjs/themes/prism-okaidia.css";
+@import "./variables.css";
 
 html,
 body {

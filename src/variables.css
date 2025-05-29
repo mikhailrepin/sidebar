@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+/* Базовая тема (Light по умолчанию) */
+@theme {
+  /* Primary */
+  --color-primary-default: oklch(57.5% 0.2 255);
+  --color-primary-light: oklch(65% 0.18 255);
+  --color-primary-invert: oklch(51% 0.21 255);
+  --color-primary-contrasted: oklch(98% 0 0);
+  --color-primary-shaded-100: oklch(70% 0.22 255 / 0.1);
+  --color-primary-shaded-200: oklch(65% 0.25 255 / 0.2);
+  --color-primary-shaded-300: oklch(49% 0.19 255);
+
+  /* Success */
+  --color-success-default: oklch(50% 0.17 150);
+  --color-success-light: oklch(63% 0.13 145);
+  --color-success-shaded-100: oklch(98% 0.02 160);
+  --color-success-shaded-200: oklch(95% 0.05 155);
+  --color-success-shaded-300: oklch(43% 0.15 150);
+
+  /* Secondary */
+  --color-secondary-default: oklch(86% 0 0 / 0.2);
+  --color-secondary-light: oklch(86% 0 0 / 0.1);
+  --color-secondary-dark: oklch(86% 0 0 / 0.4);
+
+  /* Warning */
+  --color-warning-default: oklch(72% 0.15 45);
+  --color-warning-light: oklch(79% 0.12 45);
+  --color-warning-shaded-100: oklch(97% 0.01 45);
+  --color-warning-shaded-200: oklch(93% 0.04 45);
+  --color-warning-shaded-300: oklch(51% 0.18 45);
+
+  /* Danger */
+  --color-danger-default: oklch(58% 0.24 15);
+  --color-danger-light: oklch(67% 0.18 15);
+  --color-danger-shaded-100: oklch(98% 0.01 10);
+  --color-danger-shaded-200: oklch(97% 0.03 10);
+  --color-danger-shaded-300: oklch(50% 0.24 15);
+
+  /* Trends */
+  --color-trends-pv: oklch(57% 0.19 255);
+  --color-trends-sp: oklch(57% 0.26 20);
+  --color-trends-co: oklch(57% 0.19 160);
+
+  /* Elevation */
+  --color-elevation-level-0: oklch(94% 0 0);
+  --color-elevation-level-1: oklch(96% 0 0);
+  --color-elevation-level-2: oklch(97.5% 0 0);
+  --color-elevation-level-3: oklch(98% 0 0);
+  --color-elevation-white: oklch(100% 0 0);
+  --color-elevation-black: oklch(16% 0 0);
+  --color-elevation-invert: oklch(16% 0 0);
+  --color-elevation-contrasted: oklch(98% 0 0);
+  --color-elevation-border: oklch(82% 0.03 260);
+  --color-elevation-shadow: oklch(58% 0.03 260 / 0.32);
+  --color-elevation-shadow-transparent: oklch(58% 0.03 260 / 0);
+
+  /* Text */
+  --color-text-default: oklch(16% 0 0);
+  --color-text-shaded: oklch(58% 0.03 260);
+  --color-text-disabled: oklch(80% 0 0);
+  --color-text-white: oklch(100% 0 0);
+  --color-text-invert: oklch(98% 0 0);
+  --color-text-black: oklch(16% 0 0);
+
+  /* Типографика */
+  --text-base: 16px;
+  --text-sm: 12px;
+  --text-xs: 10px;
+}
+
+/* Активация темной темы через data-theme атрибут */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Темы */
+/* Темная тема */
+[data-theme="dark"] {
+  /* Primary */
+  --color-primary-default: oklch(57.5% 0.2 255);
+  --color-primary-light: oklch(64% 0.19 255);
+  --color-primary-invert: oklch(76% 0.15 255);
+  --color-primary-contrasted: oklch(98% 0 0);
+  --color-primary-shaded-100: oklch(50% 0.17 255 / 0.2);
+  --color-primary-shaded-200: oklch(50% 0.17 255 / 0.5);
+  --color-primary-shaded-300: oklch(50% 0.17 255);
+
+  /* Success */
+  --color-success-default: oklch(63% 0.13 145);
+  --color-success-light: oklch(76% 0.11 145);
+  --color-success-shaded-100: oklch(32% 0.08 145);
+  --color-success-shaded-200: oklch(40% 0.09 145);
+  --color-success-shaded-300: oklch(47% 0.11 145);
+
+  /* Secondary */
+  --color-secondary-default: oklch(36% 0 0 / 0.3);
+  --color-secondary-light: oklch(36% 0 0 / 0.1);
+  --color-secondary-dark: oklch(36% 0 0 / 0.4);
+
+  /* Warning */
+  --color-warning-default: oklch(65% 0.13 45);
+  --color-warning-light: oklch(73% 0.1 45);
+  --color-warning-shaded-100: oklch(31% 0.15 45);
+  --color-warning-shaded-200: oklch(46% 0.17 45);
+  --color-warning-shaded-300: oklch(60% 0.18 45);
+
+  /* Danger */
+  --color-danger-default: oklch(58% 0.15 25);
+  --color-danger-light: oklch(69% 0.11 25);
+  --color-danger-shaded-100: oklch(24% 0.15 25);
+  --color-danger-shaded-200: oklch(34% 0.18 25);
+  --color-danger-shaded-300: oklch(45% 0.22 25);
+
+  /* Trends */
+  --color-trends-pv: oklch(70% 0.13 210);
+  --color-trends-sp: oklch(62% 0.16 25);
+  --color-trends-co: oklch(70% 0.12 160);
+
+  /* Elevation */
+  --color-elevation-level-0: oklch(16% 0 0);
+  --color-elevation-level-1: oklch(21% 0 0);
+  --color-elevation-level-2: oklch(26% 0 0);
+  --color-elevation-level-3: oklch(30% 0 0);
+  --color-elevation-white: oklch(100% 0 0);
+  --color-elevation-black: oklch(16% 0 0);
+  --color-elevation-invert: oklch(98% 0 0);
+  --color-elevation-contrasted: oklch(16% 0 0);
+  --color-elevation-border: oklch(38% 0 0);
+  --color-elevation-shadow: oklch(0% 0 0 / 0.64);
+  --color-elevation-shadow-transparent: oklch(0% 0 0 / 0);
+
+  /* Text */
+  --color-text-default: oklch(98% 0 0);
+  --color-text-shaded: oklch(67% 0 0);
+  --color-text-disabled: oklch(53% 0 0);
+  --color-text-white: oklch(100% 0 0);
+  --color-text-invert: oklch(16% 0 0);
+  --color-text-black: oklch(16% 0 0);
+}
+
+/* Полуночная тема */
+[data-theme="midnight"] {
+  /* Primary */
+  --color-primary-default: oklch(57.5% 0.2 255);
+  --color-primary-light: oklch(65% 0.18 255);
+  --color-primary-invert: oklch(76% 0.15 255);
+  --color-primary-contrasted: oklch(98% 0 0);
+  --color-primary-shaded-100: oklch(50% 0.17 255 / 0.2);
+  --color-primary-shaded-200: oklch(50% 0.17 255 / 0.5);
+  --color-primary-shaded-300: oklch(50% 0.17 255);
+
+  /* Success */
+  --color-success-default: oklch(63% 0.13 145);
+  --color-success-light: oklch(76% 0.11 145);
+  --color-success-shaded-100: oklch(32% 0.08 145);
+  --color-success-shaded-200: oklch(40% 0.09 145);
+  --color-success-shaded-300: oklch(47% 0.11 145);
+
+  /* Secondary */
+  --color-secondary-default: oklch(66% 0.04 230 / 0.1);
+  --color-secondary-light: oklch(66% 0.04 230 / 0.05);
+  --color-secondary-dark: oklch(66% 0.04 230 / 0.2);
+
+  /* Warning */
+  --color-warning-default: oklch(65% 0.13 45);
+  --color-warning-light: oklch(73% 0.1 45);
+  --color-warning-shaded-100: oklch(31% 0.15 45);
+  --color-warning-shaded-200: oklch(46% 0.17 45);
+  --color-warning-shaded-300: oklch(60% 0.18 45);
+
+  /* Danger */
+  --color-danger-default: oklch(58% 0.15 25);
+  --color-danger-light: oklch(69% 0.11 25);
+  --color-danger-shaded-100: oklch(24% 0.15 25);
+  --color-danger-shaded-200: oklch(34% 0.18 25);
+  --color-danger-shaded-300: oklch(45% 0.22 25);
+
+  /* Trends */
+  --color-trends-pv: oklch(70% 0.13 210);
+  --color-trends-sp: oklch(62% 0.16 25);
+  --color-trends-co: oklch(70% 0.12 160);
+
+  /* Elevation */
+  --color-elevation-level-0: oklch(14% 0.01 250);
+  --color-elevation-level-1: oklch(18% 0.01 240);
+  --color-elevation-level-2: oklch(24% 0.03 250);
+  --color-elevation-level-3: oklch(24% 0.03 250);
+  --color-elevation-white: oklch(100% 0 0);
+  --color-elevation-black: oklch(18% 0.01 240);
+  --color-elevation-invert: oklch(93% 0.03 230);
+  --color-elevation-contrasted: oklch(18% 0.01 240);
+  --color-elevation-border: oklch(30% 0.04 250);
+  --color-elevation-shadow: oklch(10% 0.01 250 / 0.64);
+  --color-elevation-shadow-transparent: oklch(10% 0.01 250 / 0);
+
+  /* Text */
+  --color-text-default: oklch(93% 0.03 230);
+  --color-text-shaded: oklch(68% 0.04 235);
+  --color-text-disabled: oklch(46% 0.03 250);
+  --color-text-white: oklch(100% 0 0);
+  --color-text-invert: oklch(14% 0.01 250);
+  --color-text-black: oklch(14% 0.01 250);
+}
+
+/* Темная золотая тема */
+[data-theme="dark-gold"] {
+  /* Primary */
+  --color-primary-default: oklch(78% 0.12 85);
+  --color-primary-light: oklch(85% 0.1 85);
+  --color-primary-invert: oklch(87% 0.09 85);
+  --color-primary-contrasted: oklch(20% 0.06 85);
+  --color-primary-shaded-100: oklch(56% 0.11 85 / 0.2);
+  --color-primary-shaded-200: oklch(56% 0.11 85 / 0.5);
+  --color-primary-shaded-300: oklch(56% 0.11 85);
+
+  /* Success */
+  --color-success-default: oklch(63% 0.13 145);
+  --color-success-light: oklch(76% 0.11 145);
+  --color-success-shaded-100: oklch(32% 0.08 145);
+  --color-success-shaded-200: oklch(40% 0.09 145);
+  --color-success-shaded-300: oklch(47% 0.11 145);
+
+  /* Secondary */
+  --color-secondary-default: oklch(36% 0 0 / 0.3);
+  --color-secondary-light: oklch(36% 0 0 / 0.1);
+  --color-secondary-dark: oklch(36% 0 0 / 0.4);
+
+  /* Warning */
+  --color-warning-default: oklch(65% 0.13 45);
+  --color-warning-light: oklch(73% 0.1 45);
+  --color-warning-shaded-100: oklch(31% 0.15 45);
+  --color-warning-shaded-200: oklch(46% 0.17 45);
+  --color-warning-shaded-300: oklch(60% 0.18 45);
+
+  /* Danger */
+  --color-danger-default: oklch(58% 0.15 25);
+  --color-danger-light: oklch(69% 0.11 25);
+  --color-danger-shaded-100: oklch(24% 0.15 25);
+  --color-danger-shaded-200: oklch(34% 0.18 25);
+  --color-danger-shaded-300: oklch(45% 0.22 25);
+
+  /* Trends */
+  --color-trends-pv: oklch(70% 0.13 210);
+  --color-trends-sp: oklch(62% 0.16 25);
+  --color-trends-co: oklch(70% 0.12 160);
+
+  /* Elevation */
+  --color-elevation-level-0: oklch(16% 0 0);
+  --color-elevation-level-1: oklch(21% 0 0);
+  --color-elevation-level-2: oklch(26% 0 0);
+  --color-elevation-level-3: oklch(30% 0 0);
+  --color-elevation-white: oklch(100% 0 0);
+  --color-elevation-black: oklch(16% 0 0);
+  --color-elevation-invert: oklch(98% 0 0);
+  --color-elevation-contrasted: oklch(16% 0 0);
+  --color-elevation-border: oklch(38% 0 0);
+  --color-elevation-shadow: oklch(0% 0 0 / 0.64);
+  --color-elevation-shadow-transparent: oklch(0% 0 0 / 0);
+
+  /* Text */
+  --color-text-default: oklch(98% 0 0);
+  --color-text-shaded: oklch(67% 0 0);
+  --color-text-disabled: oklch(53% 0 0);
+  --color-text-white: oklch(100% 0 0);
+  --color-text-invert: oklch(16% 0 0);
+  --color-text-black: oklch(16% 0 0);
+}
+
+html,
+body {
+  @apply bg-elevation-level-0 overflow-hidden text-text-default;
+}
