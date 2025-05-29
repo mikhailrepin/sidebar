@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
   template: `
     <main class="flex flex-col h-screen">
       <header
-        class="bg-zinc-50 h-10 flex items-center px-3 border-b border-zinc-200"
+        class="bg-elevation-level-3 h-10 flex items-center px-3 border-b border-elevation-border"
       >
         <h1 class="text-zinc-900 text-lg font-semibold">{{ title }}</h1>
       </header>
