@@ -35,8 +35,26 @@ import {
   closeBracketsKeymap,
 } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
-import { oneDark } from '@codemirror/theme-one-dark'; // Dark theme
-import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup to codemirror
+import { oneDark } from '@codemirror/theme-one-dark';
+import { basicSetup } from 'codemirror';
+import { ThemeService, Theme } from '../../../app/services/theme.service';
+
+// Minimal theme to ONLY override backgrounds after oneDark has been applied.
+const overrideDarkBackgroundTheme = EditorView.theme(
+  {
+    '&': {
+      // Root editor element .cm-editor
+      backgroundColor: 'var(--color-elevation-level-1) !important',
+    },
+    '.cm-gutters': {
+      // Gutter area
+      backgroundColor: 'var(--color-elevation-level-1) !important',
+      // oneDark's styles for gutter text color, border, etc., should persist
+      // as this theme only overrides the background.
+    },
+  },
+  { dark: true }
+); // Mark as dark, as var(--color-elevation-level-0) is expected to be dark.
 
 @Component({
   selector: 'app-demo-page',
@@ -212,7 +230,10 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
   isApplyDisabled: boolean = true;
   private defaultConfigJson: string = '';
 
-  constructor(private propSidebarService: PropSidebarService) {}
+  constructor(
+    private propSidebarService: PropSidebarService,
+    private themeService: ThemeService // Inject ThemeService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     try {
@@ -274,6 +295,15 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initCodeMirror(this.jsonEditText);
     // Первоначальное состояние кнопок после инициализации CodeMirror с начальным текстом
     this.updateButtonStates();
+
+    // Subscribe to theme changes to re-initialize CodeMirror with the correct theme
+    this.themeService.currentTheme$.subscribe((theme) => {
+      if (this.cmView) {
+        this.cmView.destroy();
+        this.cmView = null;
+      }
+      this.initCodeMirror(this.jsonEditText);
+    });
   }
 
   ngOnDestroy(): void {
@@ -282,37 +312,50 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initCodeMirror(initialContent: string): void {
     if (this.codemirrorHost && !this.cmView) {
+      const currentAppTheme = this.themeService.getCurrentTheme();
+      const editorExtensions: any[] = [
+        // Ensure 'any[]' or proper Extension type
+        basicSetup,
+        keymap.of([
+          ...defaultKeymap,
+          ...historyKeymap,
+          ...completionKeymap,
+          ...lintKeymap,
+          ...closeBracketsKeymap,
+          indentWithTab,
+        ]),
+        json(),
+        oneDark, // ALWAYS apply the full oneDark theme first.
+        // This handles all default oneDark styling including syntax highlighting.
+        indentOnInput(),
+        bracketMatching(),
+        closeBrackets(),
+        autocompletion(),
+        highlightSelectionMatches(),
+        placeholder('Вставьте JSON конфигурацию сюда...'),
+        EditorView.lineWrapping,
+        EditorView.updateListener.of((update: ViewUpdate) => {
+          if (update.docChanged) {
+            this.jsonEditText = update.state.doc.toString();
+            this.updateButtonStates();
+          }
+        }),
+      ];
+
+      // If the application's current theme is NOT 'light',
+      // add our minimal background override theme.
+      // This will be applied AFTER oneDark, overriding only its background.
+      if (currentAppTheme !== 'light') {
+        editorExtensions.push(overrideDarkBackgroundTheme);
+      }
+      // No explicit syntaxHighlighting(oneDarkHighlightStyle) is needed here,
+      // as the full `oneDark` extension already provides its syntax highlighting.
+
       const state = EditorState.create({
         doc: initialContent,
-        extensions: [
-          basicSetup, // Includes line numbers, history, folding, etc.
-          keymap.of([
-            ...defaultKeymap,
-            ...searchKeymap,
-            ...historyKeymap,
-            ...completionKeymap,
-            ...lintKeymap,
-            ...closeBracketsKeymap,
-            indentWithTab,
-          ]),
-          json(),
-          oneDark, // Apply the oneDark theme
-          indentOnInput(),
-          bracketMatching(),
-          closeBrackets(),
-          autocompletion(),
-          highlightSelectionMatches(),
-          placeholder('Вставьте JSON конфигурацию сюда...'),
-          EditorView.lineWrapping, // Enable line wrapping
-          EditorView.updateListener.of((update: ViewUpdate) => {
-            if (update.docChanged) {
-              this.jsonEditText = update.state.doc.toString();
-              // Optionally, add debounce here if needed before updating service/localStorage
-              this.updateButtonStates(); // Обновляем состояние кнопок при изменении текста
-            }
-          }),
-        ],
+        extensions: editorExtensions,
       });
+
       this.cmView = new EditorView({
         state,
         parent: this.codemirrorHost.nativeElement,
