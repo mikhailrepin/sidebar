@@ -68,7 +68,7 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
           <button
             (click)="loadExampleIntoTextareaAndApply()"
             [disabled]="isResetDisabled"
-            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary-default"
           >
             Сбросить конфигурацию
           </button>

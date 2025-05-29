@@ -12,7 +12,7 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
       class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2"
     >
       <div
-        class="flex gap-2 cursor-pointer items-center justify-between bg-elevation-level-1 px-2 py-2"
+        class="flex gap-2 cursor-pointer items-center justify-between bg-elevation-level-2 px-2 py-2"
         [ngClass]="{
           'rounded-t-md border-b border-elevation-border': isExpanded,
           'rounded-md': !isExpanded
