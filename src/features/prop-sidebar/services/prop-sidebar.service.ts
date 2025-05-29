@@ -86,6 +86,8 @@ export class PropSidebarService {
       id: data.id,
       title: data.title,
       groups,
+      minWidth: data.minWidth,
+      maxWidth: data.maxWidth,
     };
   }
 

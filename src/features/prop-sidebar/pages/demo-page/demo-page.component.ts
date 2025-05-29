@@ -81,10 +81,12 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       </section>
 
       <!-- Sidebar -->
-      <div *ngIf="config" class="w-96 border-l border-gray-200">
+      <div *ngIf="config" class="border-l border-gray-200">
         <app-sidebar-panel
           [config]="config"
+          [width]="sidebarWidth"
           (propertyChange)="onPropertyChange($event)"
+          (widthChange)="onSidebarWidthChange($event)"
           (close)="closePanel()"
         ></app-sidebar-panel>
       </div>
@@ -108,6 +110,84 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       .cm-editor .cm-cursor {
         border-left-color: white !important;
       }
+      .resize-handle-left {
+        position: relative;
+      }
+      .resize-handle-left ::ng-deep .mwl-resizable-handle {
+        position: absolute;
+        width: 10px; /* Ширина области для захвата */
+        height: 100%;
+        left: -5px; /* Смещение для центрирования */
+        top: 0;
+        cursor: col-resize;
+        z-index: 10; /* Чтобы было поверх других элементов */
+      }
+      .resize-handle-left.resize-active ::ng-deep .mwl-resizable-handle {
+        /* Можно добавить стили для активного состояния, если нужно */
+      }
+      /* Подсветка границы при наведении */
+      .resize-handle-left:hover ::ng-deep .mwl-resizable-handle {
+        /* Simulate border color change by adding a pseudo-element or using box-shadow */
+      }
+      .resize-handle-left.resize-active {
+        border-left: 2px solid #6366f1; /* indigo-500 */
+      }
+
+      /* Custom style for the left resize handle when hovered */
+      .resize-handle-left:hover > .mwl-resizable-handle-left {
+        background-color: rgba(
+          99,
+          102,
+          241,
+          0.5
+        ); /* semi-transparent indigo-500 */
+        transition: background-color 0.2s ease-in-out;
+      }
+
+      .resize-active {
+        /* Add a visual cue during resize if desired, e.g., a more prominent border */
+        /* For example, making the left border itself indigo during resize */
+        /* This might require adjusting where the border is applied if using the handle */
+      }
+
+      /* Стили для ручки изменения размера и контейнера app-sidebar-panel */
+      app-sidebar-panel {
+        display: block;
+        position: relative;
+      }
+
+      .resize-handle {
+        position: absolute;
+        left: -5px;
+        top: 0;
+        width: 10px;
+        height: 100%;
+        cursor: col-resize;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .resize-handle-visual {
+        width: 2px;
+        height: 50px;
+        background-color: #e0e7ff; /* indigo-100 - всегда немного видна */
+        border-radius: 2px;
+        transition: background-color 0.2s ease-in-out, height 0.2s ease-in-out;
+      }
+
+      /* При наведении на саму ручку */
+      .resize-handle:hover .resize-handle-visual {
+        background-color: #a5b4fc; /* indigo-300 */
+        height: 70px; /* Немного увеличим высоту для лучшей обратной связи */
+      }
+
+      /* Во время активного изменения размера */
+      app-sidebar-panel.is-resizing-cdk .resize-handle-visual {
+        background-color: #6366f1; /* indigo-500 */
+        height: 80px; /* Еще немного увеличим */
+      }
     `,
   ],
 })
@@ -117,8 +197,9 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   config: SidebarPanelConfig | null = null;
   jsonEditText: string = '';
-  // formattedJsonForDisplay is no longer needed
+  sidebarWidth: number = 384; // Default width (w-96)
   private readonly localStorageKey = 'sidebarConfigJson';
+  private readonly sidebarWidthKey = 'sidebarWidth';
 
   constructor(private propSidebarService: PropSidebarService) {}
 
@@ -146,6 +227,11 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applyJsonFromTextarea(false);
     } else {
       this.loadExampleIntoTextareaAndApply();
+    }
+
+    const savedWidth = localStorage.getItem(this.sidebarWidthKey);
+    if (savedWidth) {
+      this.sidebarWidth = parseInt(savedWidth, 10);
     }
   }
 
@@ -277,9 +363,17 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
     // The subscription to config$ will update jsonEditText and then call updateCodeMirrorContent.
   }
 
+  onSidebarWidthChange(newWidth: number): void {
+    this.sidebarWidth = newWidth;
+    localStorage.setItem(this.sidebarWidthKey, newWidth.toString());
+    console.log('Ширина панели изменена и сохранена:', newWidth);
+  }
+
   closePanel(): void {
     this.propSidebarService.reset(); // Triggers subscription, clearing jsonEditText and CM content
     localStorage.removeItem(this.localStorageKey);
+    localStorage.removeItem(this.sidebarWidthKey); // Удаляем сохраненную ширину
+    this.sidebarWidth = 384; // Сбрасываем ширину к дефолтной
     console.log(
       'Панель закрыта, конфигурация сброшена и удалена из localStorage.'
     );

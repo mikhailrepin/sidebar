@@ -1,17 +1,48 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostBinding,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
 import { PropertyGroupComponent } from '../property-group/property-group.component';
+import {
+  DragDropModule,
+  CdkDragMove,
+  CdkDrag,
+  CdkDragStart,
+  CdkDragEnd,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-sidebar-panel',
   standalone: true,
-  imports: [CommonModule, PropertyGroupComponent],
+  imports: [CommonModule, PropertyGroupComponent, DragDropModule],
   template: `
-    <div class="flex h-full flex-col bg-gray-50">
+    <div
+      class="flex h-full flex-col bg-gray-50 relative"
+      [style.width.px]="width"
+      [ngClass]="{ 'resizing-visual-cue': isResizing }"
+    >
+      <div
+        #resizeHandleElement
+        class="resize-handle"
+        cdkDrag
+        cdkDragLockAxis="x"
+        (cdkDragStarted)="onDragStart($event)"
+        (cdkDragMoved)="onDragMoved($event)"
+        (cdkDragEnded)="onDragEnd($event)"
+      >
+        <div class="resize-handle-visual"></div>
+      </div>
+
       <!-- Header -->
       <div
-        class="flex h-12 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm"
+        class="flex h-12 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm flex-shrink-0"
       >
         <h2 class="text-lg font-medium text-gray-900">{{ config.title }}</h2>
         <div class="flex items-center space-x-2">
@@ -37,7 +68,7 @@ import { PropertyGroupComponent } from '../property-group/property-group.compone
       </div>
 
       <!-- Search Field -->
-      <div class="border-b border-gray-200 px-4 py-2">
+      <div class="border-b border-gray-200 px-4 py-2 flex-shrink-0">
         <div class="relative">
           <div
             class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
@@ -81,9 +112,17 @@ export class SidebarPanelComponent {
   @Input() config!: SidebarPanelConfig;
   @Input() showCloseButton: boolean = true;
   @Input() showEditButtons: boolean = false;
+  @Input() width: number = 384;
 
   @Output() close = new EventEmitter<void>();
   @Output() propertyChange = new EventEmitter<{ id: string; value: any }>();
+  @Output() widthChange = new EventEmitter<number>();
+
+  @HostBinding('class.is-resizing-cdk') isResizing = false;
+  @ViewChild('resizeHandleElement') resizeHandle?: ElementRef<HTMLElement>;
+
+  private initialPointerX?: number;
+  private initialWidth?: number;
 
   filteredGroups = this.config?.groups || [];
   searchQuery: string = '';
@@ -91,6 +130,20 @@ export class SidebarPanelComponent {
   ngOnChanges() {
     this.filteredGroups = this.config?.groups || [];
     this.filterGroups();
+    if (
+      this.config &&
+      this.config.minWidth &&
+      this.width < this.config.minWidth
+    ) {
+      this.width = this.config.minWidth;
+    }
+    if (
+      this.config &&
+      this.config.maxWidth &&
+      this.width > this.config.maxWidth
+    ) {
+      this.width = this.config.maxWidth;
+    }
   }
 
   onSearch(event: Event) {
@@ -131,5 +184,38 @@ export class SidebarPanelComponent {
 
   onPropertyChange(event: { id: string; value: any }) {
     this.propertyChange.emit(event);
+  }
+
+  onDragStart(event: CdkDragStart): void {
+    this.isResizing = true;
+    this.initialWidth = this.width;
+    event.source.element.nativeElement.style.transform = 'none';
+    if (this.resizeHandle?.nativeElement) {
+      this.resizeHandle.nativeElement.style.transform = 'none';
+    }
+    this.initialPointerX =
+      event.source.element.nativeElement.getBoundingClientRect().left +
+      event.source.element.nativeElement.offsetWidth / 2;
+  }
+
+  onDragMoved(event: CdkDragMove): void {
+    if (this.initialWidth === undefined) return;
+
+    let newWidth = this.initialWidth - event.distance.x;
+
+    const minWidth = this.config?.minWidth || 100;
+    const maxWidth = this.config?.maxWidth || 800;
+
+    newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+
+    this.width = newWidth;
+
+    event.source.element.nativeElement.style.transform = 'none';
+  }
+
+  onDragEnd(event: CdkDragEnd): void {
+    this.isResizing = false;
+    this.widthChange.emit(this.width);
+    event.source.element.nativeElement.style.transform = 'none';
   }
 }

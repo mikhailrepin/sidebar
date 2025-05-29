@@ -1,6 +1,8 @@
 {
   "id": "database_001",
   "title": "Database_0012345",
+  "minWidth": 280,
+  "maxWidth": 600,
   "groups": [
     {
       "id": "group_1",

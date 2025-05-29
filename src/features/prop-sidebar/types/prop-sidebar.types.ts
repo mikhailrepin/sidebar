@@ -96,4 +96,6 @@ export interface SidebarPanelConfig {
   id: string;
   title: string;
   groups: PropertyGroup[];
+  minWidth?: number;
+  maxWidth?: number;
 }
