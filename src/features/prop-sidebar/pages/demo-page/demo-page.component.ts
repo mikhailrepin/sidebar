@@ -3,6 +3,9 @@ import {
   OnInit,
   AfterViewInit,
   ViewEncapsulation,
+  ElementRef,
+  ViewChild,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,8 +13,30 @@ import { FormsModule } from '@angular/forms';
 import { SidebarPanelComponent } from '../../components/sidebar-panel/sidebar-panel.component';
 import { PropSidebarService } from '../../services/prop-sidebar.service';
 import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
-import * as Prism from 'prismjs';
-import 'prismjs/components/prism-json';
+// import * as Prism from 'prismjs'; // No longer needed
+// import 'prismjs/components/prism-json'; // No longer needed
+
+// CodeMirror imports
+import { EditorState, Transaction } from '@codemirror/state';
+import { EditorView, keymap, placeholder, ViewUpdate } from '@codemirror/view';
+import {
+  defaultKeymap,
+  history,
+  indentWithTab,
+  historyKeymap,
+} from '@codemirror/commands';
+import { json } from '@codemirror/lang-json';
+import { bracketMatching, indentOnInput } from '@codemirror/language';
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import {
+  autocompletion,
+  completionKeymap,
+  closeBrackets,
+  closeBracketsKeymap,
+} from '@codemirror/autocomplete';
+import { lintKeymap } from '@codemirror/lint';
+import { oneDark } from '@codemirror/theme-one-dark'; // Dark theme
+import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup to codemirror
 
 @Component({
   selector: 'app-demo-page',
@@ -54,32 +79,10 @@ import 'prismjs/components/prism-json';
             <h2 class="text-xl font-semibold text-gray-800">
               Редактор конфигурации JSON:
             </h2>
-            <textarea
-              [(ngModel)]="jsonEditText"
-              class="w-full h-full p-2 border border-gray-300 rounded-md font-mono text-sm resize-none"
-              spellcheck="false"
-            ></textarea>
-          </div>
-
-          <!-- JSON Preview -->
-          <div class="flex-1 flex flex-col gap-3 pb-2">
-            <h2 class="text-xl font-semibold text-gray-800">
-              Текущая конфигурация панели (просмотр):
-            </h2>
             <div
-              *ngIf="config"
-              class="code-container bg-[#272822] rounded-lg h-full overflow-y-auto"
-            >
-              <pre
-                class="p-4 text-white"
-              ><code [innerHTML]="getCustomFormattedProperties()"></code></pre>
-            </div>
-            <div
-              *ngIf="!config"
-              class="code-container bg-gray-100 rounded-lg h-full overflow-y-auto p-4 text-gray-500"
-            >
-              Конфигурация не загружена.
-            </div>
+              #codemirrorHost
+              class="w-full h-full border border-gray-300 rounded-md overflow-hidden"
+            ></div>
           </div>
         </div>
       </section>
@@ -96,66 +99,57 @@ import 'prismjs/components/prism-json';
   `,
   styles: [
     `
-      pre {
-        font-size: 0.875rem;
-        line-height: 1.5;
-        margin: 0;
+      /* Ensure CodeMirror takes full height of its container */
+      .cm-editor {
+        height: 100%;
+        font-size: 0.875rem; /* 14px */
+      }
+      .cm-scroller {
         overflow: auto;
       }
-
-      code {
-        font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
-        white-space: pre;
+      /* Custom selection color for better visibility on dark theme if needed */
+      .cm-editor .cm-selectionBackground,
+      .cm-editor.cm-focused .cm-selectionBackground {
+        background-color: #0052cc !important; /* A distinct blue */
       }
-
-      .json-string {
-        color: #9ce57a;
-      }
-
-      .json-number {
-        color: #b5cea8;
-      }
-
-      .json-boolean {
-        color: #569cd6;
-      }
-
-      .json-null {
-        color: #569cd6;
-      }
-
-      .json-key {
-        color: #f07178;
-      }
-
-      .json-punctuation {
-        color: #d4d4d4;
+      .cm-editor .cm-cursor {
+        border-left-color: white !important;
       }
     `,
   ],
 })
-export class DemoPageComponent implements OnInit, AfterViewInit {
+export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('codemirrorHost') codemirrorHost!: ElementRef<HTMLDivElement>;
+  private cmView: EditorView | null = null;
+
   config: SidebarPanelConfig | null = null;
   jsonEditText: string = '';
+  // formattedJsonForDisplay is no longer needed
   private readonly localStorageKey = 'sidebarConfigJson';
 
   constructor(private propSidebarService: PropSidebarService) {}
 
   ngOnInit(): void {
-    this.propSidebarService.config$.subscribe((config) => {
-      this.config = config;
-      if (this.config) {
-        const serviceConfigJson = JSON.stringify(this.config, null, 2);
-        if (this.jsonEditText !== serviceConfigJson) {
-          this.jsonEditText = serviceConfigJson;
+    this.propSidebarService.config$.subscribe(
+      (config: SidebarPanelConfig | null) => {
+        this.config = config;
+        if (this.config) {
+          const serviceConfigJson = JSON.stringify(this.config, null, 2);
+          if (this.jsonEditText !== serviceConfigJson) {
+            this.jsonEditText = serviceConfigJson;
+            this.updateCodeMirrorContent(this.jsonEditText);
+          }
+        } else {
+          this.jsonEditText = '';
+          this.updateCodeMirrorContent('');
         }
       }
-      this.highlightCode();
-    });
+    );
 
     const savedJsonString = localStorage.getItem(this.localStorageKey);
     if (savedJsonString) {
       this.jsonEditText = savedJsonString;
+      // Content will be set in ngAfterViewInit or via subscription updateCodeMirrorContent
       this.applyJsonFromTextarea(false);
     } else {
       this.loadExampleIntoTextareaAndApply();
@@ -163,29 +157,74 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.highlightCode();
+    this.initCodeMirror(this.jsonEditText);
   }
 
-  highlightCode(): void {
-    if (this.config && typeof Prism !== 'undefined' && Prism.highlightAll) {
-      setTimeout(() => {
-        try {
-          Prism.highlightAll();
-        } catch (e: any) {
-          console.warn('Prism.highlightAll() failed', e);
-        }
-      }, 0);
+  ngOnDestroy(): void {
+    this.cmView?.destroy();
+  }
+
+  private initCodeMirror(initialContent: string): void {
+    if (this.codemirrorHost && !this.cmView) {
+      const state = EditorState.create({
+        doc: initialContent,
+        extensions: [
+          basicSetup, // Includes line numbers, history, folding, etc.
+          keymap.of([
+            ...defaultKeymap,
+            ...searchKeymap,
+            ...historyKeymap,
+            ...completionKeymap,
+            ...lintKeymap,
+            ...closeBracketsKeymap,
+            indentWithTab,
+          ]),
+          json(),
+          oneDark, // Apply the oneDark theme
+          indentOnInput(),
+          bracketMatching(),
+          closeBrackets(),
+          autocompletion(),
+          highlightSelectionMatches(),
+          placeholder('Вставьте JSON конфигурацию сюда...'),
+          EditorView.lineWrapping, // Enable line wrapping
+          EditorView.updateListener.of((update: ViewUpdate) => {
+            if (update.docChanged) {
+              this.jsonEditText = update.state.doc.toString();
+              // Optionally, add debounce here if needed before updating service/localStorage
+            }
+          }),
+        ],
+      });
+      this.cmView = new EditorView({
+        state,
+        parent: this.codemirrorHost.nativeElement,
+      });
     }
   }
+
+  private updateCodeMirrorContent(content: string): void {
+    if (this.cmView && this.cmView.state.doc.toString() !== content) {
+      this.cmView.dispatch({
+        changes: { from: 0, to: this.cmView.state.doc.length, insert: content },
+      });
+    }
+  }
+
+  // onJsonEdit is no longer needed as CodeMirror handles its internal state and updates jsonEditText via listener
+  // updateFormattedJsonForDisplay is no longer needed
+  // escapeHtml is no longer needed
+  // highlightCode is no longer needed
 
   async loadExampleIntoTextareaAndApply(): Promise<void> {
     try {
       const data = await import('../../data/example-panel.json');
       this.jsonEditText = JSON.stringify(data.default, null, 2);
+      this.updateCodeMirrorContent(this.jsonEditText); // Update CodeMirror
       this.applyJsonFromTextarea();
     } catch (err: any) {
       console.error('Ошибка загрузки примера конфигурации:', err);
-      this.jsonEditText = JSON.stringify(
+      const errorJson = JSON.stringify(
         {
           error: 'Не удалось загрузить пример конфигурации',
           details: err.message,
@@ -193,21 +232,28 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
         null,
         2
       );
-      this.applyJsonFromTextarea(false);
+      this.jsonEditText = errorJson;
+      this.updateCodeMirrorContent(this.jsonEditText); // Update CodeMirror with error
+      this.applyJsonFromTextarea(false); // Apply to service, but don't save error to localStorage by default
     }
   }
 
   applyJsonFromTextarea(saveToLocalStorage: boolean = true): void {
     try {
-      const parsedConfig = JSON.parse(this.jsonEditText);
+      const parsedConfig = JSON.parse(this.jsonEditText) as SidebarPanelConfig;
       this.propSidebarService.loadFromJson(parsedConfig);
+      // The subscription to config$ will call updateCodeMirrorContent if canonical form differs
 
       if (this.config) {
         const canonicalJsonString = JSON.stringify(this.config, null, 2);
-        this.jsonEditText = canonicalJsonString;
+        // Ensure CodeMirror also has the canonical version if service modified it
+        if (this.jsonEditText !== canonicalJsonString) {
+          this.jsonEditText = canonicalJsonString;
+          this.updateCodeMirrorContent(this.jsonEditText);
+        }
 
         if (saveToLocalStorage) {
-          localStorage.setItem(this.localStorageKey, canonicalJsonString);
+          localStorage.setItem(this.localStorageKey, this.jsonEditText);
           console.log(
             'Конфигурация успешно применена и сохранена в localStorage.'
           );
@@ -219,6 +265,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
         if (saveToLocalStorage) {
           localStorage.removeItem(this.localStorageKey);
         }
+        // If config becomes null, jsonEditText and CodeMirror content are cleared by the subscription
       }
     } catch (error: any) {
       console.error('Ошибка парсинга JSON из редактора:', error);
@@ -227,71 +274,21 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
           error.message +
           '. Проверьте консоль для деталей.'
       );
+      // Do not clear CodeMirror content on error, let user fix it.
     }
-    this.highlightCode();
   }
 
   onPropertyChange(event: { id: string; value: any }): void {
     console.log('Свойство изменено из панели:', event);
     this.propSidebarService.updatePropertyValue(event.id, event.value);
+    // The subscription to config$ will update jsonEditText and then call updateCodeMirrorContent.
   }
 
   closePanel(): void {
-    this.propSidebarService.reset();
+    this.propSidebarService.reset(); // Triggers subscription, clearing jsonEditText and CM content
     localStorage.removeItem(this.localStorageKey);
-    this.jsonEditText = '';
     console.log(
       'Панель закрыта, конфигурация сброшена и удалена из localStorage.'
     );
-  }
-
-  getCustomFormattedProperties(): string {
-    if (!this.config) {
-      return '';
-    }
-    const jsonString = JSON.stringify(this.config, null, 2);
-    return this.formatJsonWithHtml(jsonString);
-  }
-
-  formatJsonWithHtml(json: string): string {
-    return json
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-        (match) => {
-          let cls = 'json-number';
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = 'json-key';
-              match = match.replace(
-                /"/g,
-                '<span class="json-punctuation">"</span>'
-              );
-              match = match.replace(
-                /:/g,
-                '<span class="json-punctuation">:</span>'
-              );
-              return `<span class="${cls}">${match}</span>`;
-            } else {
-              cls = 'json-string';
-              match = match.replace(
-                /"/g,
-                '<span class="json-punctuation">"</span>'
-              );
-              return `<span class="${cls}">${match}</span>`;
-            }
-          } else if (/true|false/.test(match)) {
-            cls = 'json-boolean';
-          } else if (/null/.test(match)) {
-            cls = 'json-null';
-          }
-          return `<span class="${cls}">${match}</span>`;
-        }
-      )
-      .replace(/[{}[\],]/g, (match) => {
-        return `<span class="json-punctuation">${match}</span>`;
-      });
   }
 }
