@@ -9,15 +9,17 @@ import { CommonModule } from '@angular/common';
   template: `
     <main class="flex flex-col h-screen gap-1">
       <header
-        class="bg-elevation-level-3 h-12 flex items-center justify-between px-3 border-b border-elevation-border"
+        class="bg-elevation-level-3 h-14 flex items-center justify-between px-3 border-b border-elevation-border"
       >
-        <h1 class="text-text-default text-lg font-semibold">{{ title }}</h1>
+        <h1 class="text-text-default text-2xl font-semibold">
+          🎛️ _{{ title }}
+        </h1>
         <div class="relative">
           <button
             (click)="toggleThemeDropdown()"
-            class="px-3 py-1 rounded-md text-text-default hover:bg-elevation-level-2 focus:outline-none"
+            class="px-2 flex items-center mt-1 py-1 rounded-md border border-elevation-border text-text-default hover:bg-elevation-level-2 focus:outline-none"
           >
-            Тема: {{ currentThemeDisplayName }}
+            {{ currentThemeDisplayName }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-4 w-4 inline-block ml-1 transition-transform duration-200"
@@ -34,13 +36,15 @@ import { CommonModule } from '@angular/common';
           </button>
           <div
             *ngIf="isThemeDropdownOpen"
-            class="absolute right-0 mt-2 w-48 bg-elevation-level-1 rounded-md shadow-lg py-1 z-50 border border-elevation-border"
+            class="absolute right-0 mt-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-lg p-1 z-50 border border-elevation-border"
           >
             <a
               *ngFor="let theme of availableThemes"
               (click)="selectTheme(theme.name)"
-              class="block px-4 py-2 text-sm text-text-default hover:bg-elevation-level-2 cursor-pointer"
-              [class.bg-elevation-level-2]="theme.name === currentTheme"
+              class="block px-4 py-2 text-sm text-text-default hover:bg-secondary-default cursor-pointer"
+              [class.bg-primary-shaded-100.text-primary-default]="
+                theme.name === currentTheme
+              "
             >
               {{ theme.displayText }}
             </a>
@@ -56,7 +60,7 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class AppComponent implements OnInit {
-  title = 'App';
+  title = 'FormGen 1.0';
   isThemeDropdownOpen = false;
   availableThemes: { name: Theme; displayText: string }[] = [];
   currentTheme: Theme = 'light';

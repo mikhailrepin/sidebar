@@ -97,7 +97,7 @@ import {
       </div>
 
       <!-- Content -->
-      <div class="flex-1 overflow-y-auto p-4">
+      <div class="flex-1 overflow-y-auto p-3">
         <ng-container *ngFor="let group of filteredGroups">
           <app-property-group
             [group]="group"

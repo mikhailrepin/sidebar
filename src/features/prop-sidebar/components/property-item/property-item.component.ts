@@ -116,7 +116,7 @@ import {
           <!-- Readonly -->
           <div *ngSwitchCase="'readonly'" class="flex flex-col">
             <div
-              class="rounded border border-elevation-border bg-elevation-level-1 px-3 py-2 text-sm text-text-shaded"
+              class="w-full rounded-md border border-elevation-border bg-secondary-default h-8 px-2 flex items-center text-sm text-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
             >
               {{ property.value }}
             </div>

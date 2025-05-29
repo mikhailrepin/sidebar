@@ -16,8 +16,8 @@ export class ThemeService {
   themes: { name: Theme; displayText: string }[] = [
     { name: 'light', displayText: 'Светлая' },
     { name: 'dark', displayText: 'Темная' },
-    { name: 'midnight', displayText: 'Полуночная' },
-    { name: 'dark-gold', displayText: 'Темная золотая' },
+    { name: 'midnight', displayText: 'Полночь' },
+    { name: 'dark-gold', displayText: 'Тёмное золото' },
   ];
 
   constructor(rendererFactory: RendererFactory2) {
