@@ -67,13 +67,15 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
         <div class="justify-end flex gap-4">
           <button
             (click)="loadExampleIntoTextareaAndApply()"
-            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer"
+            [disabled]="isResetDisabled"
+            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Сбросить конфигурацию
           </button>
           <button
             (click)="applyJsonFromTextarea()"
-            class="rounded w-fit bg-primary-default px-4 py-2 font-medium text-primary-contrasted hover:bg-primary-invert hover:cursor-pointer"
+            [disabled]="isApplyDisabled"
+            class="rounded w-fit bg-primary-default px-4 py-2 font-medium text-primary-contrasted hover:bg-primary-invert hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Применить конфигурацию
           </button>
@@ -205,32 +207,61 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly localStorageKey = 'sidebarConfigJson';
   private readonly sidebarWidthKey = 'sidebarWidth';
 
+  // State for button disabling
+  isResetDisabled: boolean = true;
+  isApplyDisabled: boolean = true;
+  private defaultConfigJson: string = '';
+
   constructor(private propSidebarService: PropSidebarService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    try {
+      const data = await import('../../prop-sidebar/data/example-panel.json');
+      this.defaultConfigJson = JSON.stringify(data.default, null, 2);
+    } catch (err) {
+      console.error(
+        'Не удалось загрузить конфигурацию по умолчанию для состояния кнопок:',
+        err
+      );
+      this.defaultConfigJson = ''; // Убедимся, что значение определено
+    }
+
     this.propSidebarService.config$.subscribe(
-      (config: SidebarPanelConfig | null) => {
-        this.config = config;
+      (newServiceConfig: SidebarPanelConfig | null) => {
+        this.config = newServiceConfig; // Сохраняем актуальную конфигурацию из сервиса
+        let expectedEditorContent: string;
+
         if (this.config) {
-          const serviceConfigJson = JSON.stringify(this.config, null, 2);
-          if (this.jsonEditText !== serviceConfigJson) {
-            this.jsonEditText = serviceConfigJson;
-            this.updateCodeMirrorContent(this.jsonEditText);
-          }
+          // Если в сервисе есть валидная конфигурация, она является ожидаемым содержимым редактора
+          expectedEditorContent = JSON.stringify(this.config, null, 2);
         } else {
-          this.jsonEditText = '';
-          this.updateCodeMirrorContent('');
+          // Если конфигурация в сервисе null (панель закрыта, конфиг сброшен),
+          // редактор должен отображать конфигурацию по умолчанию.
+          expectedEditorContent = this.defaultConfigJson; // <--- Ключевое изменение
         }
+
+        // Обновляем текст в редакторе и сам редактор, только если он отличается от ожидаемого.
+        if (this.jsonEditText !== expectedEditorContent) {
+          this.jsonEditText = expectedEditorContent;
+          this.updateCodeMirrorContent(this.jsonEditText);
+        }
+
+        // Состояние кнопок обновляем в любом случае, так как оно зависит и от редактора, и от сервиса.
+        this.updateButtonStates();
       }
     );
 
     const savedJsonString = localStorage.getItem(this.localStorageKey);
     if (savedJsonString) {
-      this.jsonEditText = savedJsonString;
-      // Content will be set in ngAfterViewInit or via subscription updateCodeMirrorContent
+      this.jsonEditText = savedJsonString; // Начальный текст для CodeMirror
+      // applyJsonFromTextarea вызовет propSidebarService.loadFromJson(),
+      // что вызовет подписку, которая обновит jsonEditText до канонической формы
+      // и вызовет updateButtonStates().
       this.applyJsonFromTextarea(false);
     } else {
-      this.loadExampleIntoTextareaAndApply();
+      // loadExampleIntoTextareaAndApply установит jsonEditText в defaultConfigJson,
+      // затем вызовет applyJsonFromTextarea, который обновит состояние кнопок.
+      await this.loadExampleIntoTextareaAndApply();
     }
 
     const savedWidth = localStorage.getItem(this.sidebarWidthKey);
@@ -241,6 +272,8 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initCodeMirror(this.jsonEditText);
+    // Первоначальное состояние кнопок после инициализации CodeMirror с начальным текстом
+    this.updateButtonStates();
   }
 
   ngOnDestroy(): void {
@@ -275,6 +308,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
             if (update.docChanged) {
               this.jsonEditText = update.state.doc.toString();
               // Optionally, add debounce here if needed before updating service/localStorage
+              this.updateButtonStates(); // Обновляем состояние кнопок при изменении текста
             }
           }),
         ],
@@ -300,43 +334,55 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
   // highlightCode is no longer needed
 
   async loadExampleIntoTextareaAndApply(): Promise<void> {
-    try {
-      const data = await import('../../prop-sidebar/data/example-panel.json');
-      this.jsonEditText = JSON.stringify(data.default, null, 2);
-      this.updateCodeMirrorContent(this.jsonEditText); // Update CodeMirror
-      this.applyJsonFromTextarea();
-    } catch (err: any) {
-      console.error('Ошибка загрузки примера конфигурации:', err);
-      const errorJson = JSON.stringify(
-        {
-          error: 'Не удалось загрузить пример конфигурации',
-          details: err.message,
-        },
-        null,
-        2
-      );
-      this.jsonEditText = errorJson;
-      this.updateCodeMirrorContent(this.jsonEditText); // Update CodeMirror with error
-      this.applyJsonFromTextarea(false); // Apply to service, but don't save error to localStorage by default
+    // defaultConfigJson уже должен быть загружен в ngOnInit
+    if (this.defaultConfigJson === '') {
+      // Попытка загрузить снова, если в ngOnInit не удалось, или обработать ошибку
+      try {
+        const data = await import('../../prop-sidebar/data/example-panel.json');
+        this.defaultConfigJson = JSON.stringify(data.default, null, 2);
+      } catch (err: any) {
+        console.error(
+          'Ошибка загрузки примера конфигурации (запасной вариант):',
+          err
+        );
+        this.jsonEditText = JSON.stringify(
+          {
+            error: 'Не удалось загрузить пример конфигурации',
+            details: err.message,
+          },
+          null,
+          2
+        );
+        this.updateCodeMirrorContent(this.jsonEditText);
+        this.propSidebarService.loadFromJson(null as any); // Очищаем конфигурацию в сервисе
+        // updateButtonStates будет вызван подпиской на сервис или явно
+        this.updateButtonStates();
+        return;
+      }
     }
+
+    this.jsonEditText = this.defaultConfigJson;
+    this.updateCodeMirrorContent(this.jsonEditText);
+    this.applyJsonFromTextarea(true); // Применить и сохранить в localStorage
   }
 
   applyJsonFromTextarea(saveToLocalStorage: boolean = true): void {
+    let parsedConfigSuccessfully = false;
     try {
       const parsedConfig = JSON.parse(this.jsonEditText) as SidebarPanelConfig;
       this.propSidebarService.loadFromJson(parsedConfig);
-      // The subscription to config$ will call updateCodeMirrorContent if canonical form differs
+      // Подписка на config$ вызовет:
+      // 1. Обновление this.config
+      // 2. Обновление this.jsonEditText до канонической формы (если отличается)
+      // 3. Обновление CodeMirror (если jsonEditText изменился)
+      // 4. Вызов this.updateButtonStates()
+      parsedConfigSuccessfully = true; // Успешный парсинг и загрузка в сервис
 
       if (this.config) {
-        const canonicalJsonString = JSON.stringify(this.config, null, 2);
-        // Ensure CodeMirror also has the canonical version if service modified it
-        if (this.jsonEditText !== canonicalJsonString) {
-          this.jsonEditText = canonicalJsonString;
-          this.updateCodeMirrorContent(this.jsonEditText);
-        }
-
+        // this.config уже обновлен подпиской
+        // this.jsonEditText также мог быть обновлен до канонической формы подпиской
         if (saveToLocalStorage) {
-          localStorage.setItem(this.localStorageKey, this.jsonEditText);
+          localStorage.setItem(this.localStorageKey, this.jsonEditText); // Используем текущий jsonEditText
           console.log(
             'Конфигурация успешно применена и сохранена в localStorage.'
           );
@@ -344,11 +390,16 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log('Конфигурация успешно применена.');
         }
       } else {
-        console.warn('Конфигурация привела к null значению this.config');
+        // Конфигурация стала null после парсинга/загрузки (например, пустая JSON строка)
+        // Это может произойти, если this.jsonEditText был, например, "null" или "{}" который сервис интерпретирует как отсутствие конфигурации.
+        console.warn(
+          'Применение конфигурации привело к null значению this.config в сервисе.'
+        );
         if (saveToLocalStorage) {
-          localStorage.removeItem(this.localStorageKey);
+          localStorage.setItem(this.localStorageKey, this.jsonEditText); // Сохраняем то, что привело к null
         }
-        // If config becomes null, jsonEditText and CodeMirror content are cleared by the subscription
+        // Примечание: подписка уже очистила jsonEditText (если сервис вернул null -> пустую строку)
+        // и вызвала updateButtonStates, если config стал null.
       }
     } catch (error: any) {
       console.error('Ошибка парсинга JSON из редактора:', error);
@@ -357,8 +408,43 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
           error.message +
           '. Проверьте консоль для деталей.'
       );
-      // Do not clear CodeMirror content on error, let user fix it.
+      // При ошибке, пользователь должен исправить. "Применить" должна быть активна, если в редакторе есть текст.
+      // Состояние "Сбросить" зависит от того, совпадает ли текущий текст с дефолтным.
+      this.updateButtonStates(); // Явно обновляем кнопки после ошибки
     }
+  }
+
+  private updateButtonStates(): void {
+    const defaultLoaded = this.defaultConfigJson !== '';
+    let currentEditorJsonCanonical = '';
+
+    try {
+      // Приводим текущее содержимое редактора к канонической JSON строке
+      // Это нужно, чтобы сравнение было нечувствительно к форматированию (пробелы, переносы строк)
+      // и порядку свойств (если JSON.parse + JSON.stringify его нормализуют).
+      const parsedEditorContent = JSON.parse(this.jsonEditText);
+      currentEditorJsonCanonical = JSON.stringify(parsedEditorContent, null, 2);
+    } catch (e) {
+      // Если в редакторе невалидный JSON, то он точно не равен дефолтной или активной конфигурации.
+      // Оставляем jsonEditText как есть для прямого сравнения, которое скорее всего вернет false.
+      currentEditorJsonCanonical = this.jsonEditText;
+    }
+
+    // Кнопка "Сбросить" должна быть заблокирована, если канонический вид текущей конфигурации в редакторе
+    // совпадает с конфигурацией по умолчанию.
+    // defaultConfigJson уже создан с JSON.stringify(..., null, 2)
+    this.isResetDisabled =
+      defaultLoaded && currentEditorJsonCanonical === this.defaultConfigJson;
+
+    // activeServiceConfigJson также создается с JSON.stringify(..., null, 2) из this.config
+    const activeServiceConfigJson = this.config
+      ? JSON.stringify(this.config, null, 2)
+      : '';
+
+    // Кнопка "Применить" должна быть заблокирована, если канонический вид текущей конфигурации в редакторе
+    // совпадает с активной конфигурацией в сервисе.
+    this.isApplyDisabled =
+      currentEditorJsonCanonical === activeServiceConfigJson;
   }
 
   onPropertyChange(event: { id: string; value: any }): void {
@@ -374,7 +460,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   closePanel(): void {
-    this.propSidebarService.reset(); // Triggers subscription, clearing jsonEditText and CM content
+    this.propSidebarService.reset(); // Вызывает подписку: config=null, jsonEditText='', CM очищается, updateButtonStates() вызывается.
     localStorage.removeItem(this.localStorageKey);
     localStorage.removeItem(this.sidebarWidthKey); // Удаляем сохраненную ширину
     this.sidebarWidth = 384; // Сбрасываем ширину к дефолтной

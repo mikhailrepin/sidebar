@@ -12,7 +12,10 @@ body {
 }
 
 button {
-  @apply hover:cursor-pointer disabled:cursor-not-allowed;
+  @apply hover:cursor-pointer;
+  &:disabled {
+    pointer-events: none;
+  }
 }
 
 * {
