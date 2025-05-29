@@ -172,17 +172,8 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
   getCustomFormattedProperties(): string {
     if (!this.config) return '';
 
-    const properties: Record<string, any> = {};
-
-    // Извлекаем все свойства из всех групп
-    this.config.groups.forEach((group) => {
-      group.properties.forEach((prop) => {
-        properties[prop.id] = prop.value;
-      });
-    });
-
-    // Получаем JSON строку
-    const jsonString = JSON.stringify(properties, null, 2);
+    // Получаем JSON строку из всего конфига
+    const jsonString = JSON.stringify(this.config, null, 2);
 
     // Форматируем строку с HTML-тегами для подсветки синтаксиса
     return this.formatJsonWithHtml(jsonString);
