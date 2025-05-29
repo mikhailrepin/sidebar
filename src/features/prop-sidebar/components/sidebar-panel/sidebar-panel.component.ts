@@ -24,7 +24,7 @@ import {
   imports: [CommonModule, PropertyGroupComponent, DragDropModule],
   template: `
     <div
-      class="flex h-full flex-col bg-gray-50 relative"
+      class="flex h-full flex-col bg-elevation-level-1 relative"
       [style.width.px]="width"
       [ngClass]="{ 'resizing-visual-cue': isResizing }"
     >
@@ -42,14 +42,16 @@ import {
 
       <!-- Header -->
       <div
-        class="flex h-12 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm flex-shrink-0"
+        class="flex h-12 items-center justify-between border-b border-elevation-border bg-elevation-level-0 px-4 shadow-sm flex-shrink-0"
       >
-        <h2 class="text-lg font-medium text-gray-900">{{ config.title }}</h2>
+        <h2 class="text-lg font-medium text-text-default">
+          {{ config.title }}
+        </h2>
         <div class="flex items-center space-x-2">
           <button
             *ngIf="showCloseButton"
             (click)="onCloseClick()"
-            class="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+            class="rounded-md p-1 text-text-disabled hover:bg-elevation-level-1 hover:text-text-shaded"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -68,13 +70,13 @@ import {
       </div>
 
       <!-- Search Field -->
-      <div class="border-b border-gray-200 px-4 py-2 flex-shrink-0">
+      <div class="border-b border-elevation-border px-4 py-2 flex-shrink-0">
         <div class="relative">
           <div
             class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           >
             <svg
-              class="h-4 w-4 text-gray-400"
+              class="h-4 w-4 text-text-disabled"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -88,7 +90,7 @@ import {
           </div>
           <input
             type="text"
-            class="block w-full rounded-md border-gray-300 bg-white py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            class="block w-full rounded-md border-elevation-border bg-elevation-level-0 py-2 pl-10 pr-3 text-sm placeholder-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
             placeholder="Поиск свойств..."
             (input)="onSearch($event)"
           />
@@ -107,6 +109,23 @@ import {
       </div>
     </div>
   `,
+  styles: [
+    `
+      /* При наведении на саму ручку */
+      .resize-handle:hover .resize-handle-visual {
+        width: 2px; /* Visible on hover */
+        background-color: var(--color-primary-default); /* indigo-500 */
+      }
+
+      /* Во время активного изменения размера */
+      app-sidebar-panel.is-resizing-cdk .resize-handle-visual {
+        width: 2px;
+        background-color: var(
+          --color-primary-invert
+        ); /* indigo-600 - slightly darker when resizing */
+      }
+    `,
+  ],
 })
 export class SidebarPanelComponent {
   @Input() config!: SidebarPanelConfig;

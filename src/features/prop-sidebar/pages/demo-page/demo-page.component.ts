@@ -47,13 +47,13 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
     <div class="flex h-full">
       <!-- Main Content -->
       <section
-        class="flex-1 flex flex-col gap-6 bg-zinc-50 p-6 h-full max-h-[calc(100vh-40px)] overflow-hidden"
+        class="flex-1 flex flex-col gap-6 bg-elevation-level-0 p-6 h-full max-h-[calc(100vh-40px)] overflow-hidden"
       >
         <div class="flex flex-col">
-          <h1 class="text-xl font-semibold text-gray-800">
+          <h1 class="text-xl font-semibold text-text-default">
             Редактор панели свойств
           </h1>
-          <p class="text-gray-600 pt-2">
+          <p class="text-text-shaded pt-2">
             Состав панели генерируется динамически из JSON конфигурации. Ниже вы
             можете редактировать JSON и применять изменения.
           </p>
@@ -61,19 +61,19 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
 
         <div
           #codemirrorHost
-          class="w-full h-full border border-gray-300 rounded-md overflow-hidden"
+          class="w-full h-full border border-elevation-border rounded-md overflow-hidden"
         ></div>
 
         <div class="justify-end flex gap-4">
           <button
             (click)="loadExampleIntoTextareaAndApply()"
-            class="rounded w-fit px-4 py-2 font-medium text-zinc-800 border border-zinc-300 hover:cursor-pointer"
+            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer"
           >
             Сбросить конфигурацию
           </button>
           <button
             (click)="applyJsonFromTextarea()"
-            class="rounded w-fit bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600 hover:cursor-pointer"
+            class="rounded w-fit bg-primary-default px-4 py-2 font-medium text-text-white hover:bg-primary-invert hover:cursor-pointer"
           >
             Применить конфигурацию
           </button>
@@ -81,7 +81,7 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       </section>
 
       <!-- Sidebar -->
-      <div *ngIf="config" class="border-l border-gray-200 h-full">
+      <div *ngIf="config" class="border-l border-elevation-border h-full">
         <app-sidebar-panel
           [config]="config"
           [width]="sidebarWidth"
@@ -108,7 +108,9 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
         background-color: #0052cc !important; /* A distinct blue */
       }
       .cm-editor .cm-cursor {
-        border-left-color: white !important;
+        border-left-color: var(
+          --color-text-white
+        ) !important; /* Ensure cursor is visible on dark theme */
       }
       .resize-handle-left {
         position: relative;
@@ -130,17 +132,14 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
         /* Simulate border color change by adding a pseudo-element or using box-shadow */
       }
       .resize-handle-left.resize-active {
-        border-left: 2px solid #6366f1; /* indigo-500 */
+        border-left: 2px solid var(--color-primary-default); /* indigo-500 */
       }
 
       /* Custom style for the left resize handle when hovered */
       .resize-handle-left:hover > .mwl-resizable-handle-left {
-        background-color: rgba(
-          99,
-          102,
-          241,
-          0.5
-        ); /* semi-transparent indigo-500 */
+        background-color: oklch(
+          from var(--color-primary-default) l c h / 0.5
+        ); /* semi-transparent primary */
         transition: background-color 0.2s ease-in-out;
       }
 
@@ -180,13 +179,15 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       /* При наведении на саму ручку */
       .resize-handle:hover .resize-handle-visual {
         width: 2px; /* Visible on hover */
-        background-color: #6366f1; /* indigo-500 */
+        background-color: var(--color-primary-default); /* indigo-500 */
       }
 
       /* Во время активного изменения размера */
       app-sidebar-panel.is-resizing-cdk .resize-handle-visual {
         width: 2px;
-        background-color: #4f46e5; /* indigo-600 - slightly darker when resizing */
+        background-color: var(
+          --color-primary-invert
+        ); /* indigo-600 - slightly darker when resizing */
       }
     `,
   ],

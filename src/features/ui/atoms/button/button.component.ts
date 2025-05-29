@@ -29,12 +29,13 @@ export class ButtonComponent {
       'rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
 
     const variantClasses = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+      primary:
+        'bg-primary-default text-text-white hover:bg-primary-invert focus:ring-primary-default',
       secondary:
-        'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+        'bg-secondary-default text-text-default hover:bg-secondary-dark focus:ring-secondary-dark',
       outline:
-        'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
-      text: 'bg-transparent text-blue-600 hover:bg-gray-100 focus:ring-blue-500',
+        'border border-elevation-border bg-elevation-level-0 text-text-shaded hover:bg-elevation-level-1 focus:ring-primary-default',
+      text: 'bg-transparent text-primary-default hover:bg-elevation-level-1 focus:ring-primary-default',
     };
 
     const sizeClasses = {

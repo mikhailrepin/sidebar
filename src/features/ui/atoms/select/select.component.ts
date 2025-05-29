@@ -22,7 +22,7 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
       <label
         *ngIf="label"
         [for]="id"
-        class="mb-1 text-sm font-medium text-gray-700"
+        class="mb-1 text-sm font-medium text-text-shaded"
       >
         {{ label }}
       </label>
@@ -32,7 +32,7 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
           [disabled]="disabled"
           [value]="value"
           (change)="onChange($event)"
-          class="w-full appearance-none rounded border border-gray-300 bg-white px-3 py-2 pr-8 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+          class="w-full appearance-none rounded border border-elevation-border bg-elevation-level-0 px-3 py-2 pr-8 shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled"
         >
           <option
             *ngFor="let option of options"
@@ -43,7 +43,7 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
           </option>
         </select>
         <div
-          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-text-shaded"
         >
           <svg
             class="h-4 w-4 fill-current"

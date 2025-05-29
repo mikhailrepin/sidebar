@@ -21,13 +21,13 @@ import {
       <label
         *ngIf="label"
         [for]="id"
-        class="mb-1 text-sm font-medium text-gray-700"
+        class="mb-1 text-sm font-medium text-text-shaded"
       >
         {{ label }}
       </label>
       <div class="flex items-center gap-2">
         <div
-          class="w-8 h-8 rounded-md border border-gray-300 shadow-sm"
+          class="w-8 h-8 rounded-md border border-elevation-border shadow-sm"
           [style.backgroundColor]="value"
         ></div>
         <input
@@ -36,7 +36,7 @@ import {
           [disabled]="disabled"
           [value]="value"
           (input)="onInputChange($event)"
-          class="rounded border border-gray-300 px-3 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 w-32"
+          class="rounded border border-elevation-border px-3 py-1 text-sm shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled w-32"
         />
         <input
           type="color"

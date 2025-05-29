@@ -21,7 +21,7 @@ import {
       <label
         *ngIf="label"
         [for]="id"
-        class="mb-1 text-sm font-medium text-gray-700"
+        class="mb-1 text-sm font-medium text-text-shaded"
       >
         {{ label }}
       </label>
@@ -34,7 +34,7 @@ import {
           [readonly]="readonly"
           [value]="value"
           (input)="onInputChange($event)"
-          class="w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+          class="w-full rounded border border-elevation-border px-3 py-2 shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled"
         />
       </div>
     </div>

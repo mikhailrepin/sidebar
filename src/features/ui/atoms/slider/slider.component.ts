@@ -19,10 +19,12 @@ import {
   template: `
     <div class="flex flex-col w-full">
       <div class="flex justify-between items-center mb-2" *ngIf="label">
-        <label [for]="id" class="text-sm font-medium text-gray-700">{{
+        <label [for]="id" class="text-sm font-medium text-text-shaded">{{
           label
         }}</label>
-        <span *ngIf="showValue" class="text-sm text-gray-500">{{ value }}</span>
+        <span *ngIf="showValue" class="text-sm text-text-disabled">{{
+          value
+        }}</span>
       </div>
       <div class="flex items-center gap-2">
         <input
@@ -34,7 +36,7 @@ import {
           [disabled]="disabled"
           [value]="value"
           (input)="onInputChange($event)"
-          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          class="w-full h-2 bg-elevation-level-2 rounded-lg appearance-none cursor-pointer accent-primary-default"
         />
         <input
           *ngIf="showInput"
@@ -45,7 +47,7 @@ import {
           [disabled]="disabled"
           [value]="value"
           (input)="onNumberChange($event)"
-          class="w-16 rounded border border-gray-300 px-2 py-1 text-right text-sm"
+          class="w-16 rounded border border-elevation-border px-2 py-1 text-right text-sm"
         />
       </div>
     </div>

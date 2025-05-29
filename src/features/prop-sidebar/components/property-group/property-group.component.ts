@@ -8,17 +8,19 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
   standalone: true,
   imports: [CommonModule, PropertyItemComponent],
   template: `
-    <div class="mb-2 rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div
+      class="mb-2 rounded-lg border border-elevation-border bg-elevation-level-0 shadow-sm"
+    >
       <div
-        class="flex cursor-pointer items-center justify-between rounded-t-lg border-b border-gray-200 bg-gray-50 px-4 py-2"
+        class="flex cursor-pointer items-center justify-between rounded-t-lg border-b border-elevation-border bg-elevation-level-1 px-4 py-2"
         (click)="toggleExpanded()"
       >
-        <h3 class="text-sm font-medium text-gray-700">{{ group.title }}</h3>
+        <h3 class="text-sm font-medium text-text-shaded">{{ group.title }}</h3>
         <div class="flex items-center">
           <button
             *ngIf="showEditButton"
             (click)="onEditClick($event)"
-            class="mr-2 rounded-md p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+            class="mr-2 rounded-md p-1 text-text-shaded hover:bg-elevation-level-2 hover:text-text-default"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

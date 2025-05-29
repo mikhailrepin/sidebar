@@ -115,18 +115,18 @@ import {
 
         <!-- Readonly -->
         <div *ngSwitchCase="'readonly'" class="flex flex-col">
-          <label class="mb-1 text-sm font-medium text-gray-700">{{
+          <label class="mb-1 text-sm font-medium text-text-shaded">{{
             property.label
           }}</label>
           <div
-            class="rounded border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+            class="rounded border border-elevation-border bg-elevation-level-1 px-3 py-2 text-sm text-text-shaded"
           >
             {{ property.value }}
           </div>
         </div>
 
         <!-- Fallback for unknown type -->
-        <div *ngSwitchDefault class="text-sm text-red-500">
+        <div *ngSwitchDefault class="text-sm text-danger-default">
           Unknown property type: {{ property.type }}
         </div>
       </ng-container>
