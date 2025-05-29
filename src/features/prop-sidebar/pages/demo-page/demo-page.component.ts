@@ -81,7 +81,7 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       </section>
 
       <!-- Sidebar -->
-      <div *ngIf="config" class="border-l border-gray-200">
+      <div *ngIf="config" class="border-l border-gray-200 h-full">
         <app-sidebar-panel
           [config]="config"
           [width]="sidebarWidth"
@@ -158,9 +158,9 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
 
       .resize-handle {
         position: absolute;
-        left: -5px;
+        left: -5px; /* Adjusted for 2px handle centered on border */
         top: 0;
-        width: 10px;
+        width: 10px; /* Interaction area */
         height: 100%;
         cursor: col-resize;
         z-index: 20;
@@ -170,23 +170,22 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       }
 
       .resize-handle-visual {
-        width: 2px;
-        height: 50px;
-        background-color: #e0e7ff; /* indigo-100 - всегда немного видна */
-        border-radius: 2px;
-        transition: background-color 0.2s ease-in-out, height 0.2s ease-in-out;
+        width: 0; /* Hidden by default */
+        height: 100%;
+        background-color: transparent; /* Hidden by default */
+        transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out;
       }
 
       /* При наведении на саму ручку */
       .resize-handle:hover .resize-handle-visual {
-        background-color: #a5b4fc; /* indigo-300 */
-        height: 70px; /* Немного увеличим высоту для лучшей обратной связи */
+        width: 2px; /* Visible on hover */
+        background-color: #6366f1; /* indigo-500 */
       }
 
       /* Во время активного изменения размера */
       app-sidebar-panel.is-resizing-cdk .resize-handle-visual {
-        background-color: #6366f1; /* indigo-500 */
-        height: 80px; /* Еще немного увеличим */
+        width: 2px;
+        background-color: #4f46e5; /* indigo-600 - slightly darker when resizing */
       }
     `,
   ],
