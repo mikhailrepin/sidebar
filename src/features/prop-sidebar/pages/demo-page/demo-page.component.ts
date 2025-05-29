@@ -5,7 +5,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { SidebarPanelComponent } from '../../components/sidebar-panel/sidebar-panel.component';
 import { PropSidebarService } from '../../services/prop-sidebar.service';
 import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
@@ -47,8 +47,8 @@ import 'prismjs/components/prism-json';
             class="code-container bg-[#272822] rounded-lg h-[calc(85%-40px)] overflow-y-auto"
           >
             <pre
-              class="language-json p-0 w-full"
-            ><code class="language-json">{{ getFormattedProperties() }}</code></pre>
+              class="p-4 text-white"
+            ><code [innerHTML]="getCustomFormattedProperties()"></code></pre>
           </div>
         </div>
       </section>
@@ -68,12 +68,37 @@ import 'prismjs/components/prism-json';
       pre {
         font-size: 0.875rem;
         line-height: 1.5;
+        margin: 0;
+        overflow: auto;
       }
 
       code {
         font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
-        white-space: pre-wrap;
-        word-break: break-all;
+        white-space: pre;
+      }
+
+      .json-string {
+        color: #9ce57a;
+      }
+
+      .json-number {
+        color: #b5cea8;
+      }
+
+      .json-boolean {
+        color: #569cd6;
+      }
+
+      .json-null {
+        color: #569cd6;
+      }
+
+      .json-key {
+        color: #f07178;
+      }
+
+      .json-punctuation {
+        color: #d4d4d4;
       }
     `,
   ],
@@ -81,25 +106,17 @@ import 'prismjs/components/prism-json';
 export class DemoPageComponent implements OnInit, AfterViewInit {
   config: SidebarPanelConfig | null = null;
 
-  constructor(
-    private propSidebarService: PropSidebarService,
-    private http: HttpClient
-  ) {}
+  constructor(private propSidebarService: PropSidebarService) {}
 
   ngOnInit(): void {
     // Subscribe to config changes
     this.propSidebarService.config$.subscribe((config) => {
       this.config = config;
-      // После обновления конфигурации, запускаем подсветку синтаксиса снова
-      setTimeout(() => {
-        this.highlightCode();
-      }, 0);
     });
   }
 
   ngAfterViewInit(): void {
-    // Инициализируем подсветку синтаксиса при загрузке компонента
-    this.highlightCode();
+    // Инициализируем при загрузке компонента
   }
 
   highlightCode(): void {
@@ -109,53 +126,27 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
   }
 
   loadExampleConfig(): void {
-    // Load the example configuration from the JSON file
-    this.http.get<any>('assets/data/example-panel.json').subscribe({
-      next: (data) => {
-        try {
-          this.config = this.propSidebarService.loadFromJson(data);
-          console.log('Configuration loaded successfully', this.config);
-          setTimeout(() => {
-            this.highlightCode();
-          }, 0);
-        } catch (error) {
-          console.error('Error loading configuration:', error);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching configuration file:', err);
-
-        // Fallback: Load directly from assets in development
-        this.loadHardcodedConfig();
-      },
-    });
+    // Загружаем данные напрямую из локального JSON файла
+    this.loadHardcodedConfig();
   }
 
   loadHardcodedConfig(): void {
-    // For development/demo purposes, load the JSON directly from the imported file
+    // Загружаем JSON напрямую из импортированного файла
     import('../../data/example-panel.json')
       .then((data) => {
         this.config = this.propSidebarService.loadFromJson(data.default);
-        console.log('Hardcoded configuration loaded successfully', this.config);
-        setTimeout(() => {
-          this.highlightCode();
-        }, 0);
+        console.log('Конфигурация успешно загружена', this.config);
       })
       .catch((err) => {
-        console.error('Error loading hardcoded configuration:', err);
+        console.error('Ошибка загрузки конфигурации:', err);
       });
   }
 
   onPropertyChange(event: { id: string; value: any }): void {
-    console.log('Property changed:', event);
+    console.log('Свойство изменено:', event);
 
-    // Update the property in the service
+    // Обновляем свойство в сервисе
     this.propSidebarService.updatePropertyValue(event.id, event.value);
-
-    // Обновляем подсветку синтаксиса при изменении свойств
-    setTimeout(() => {
-      this.highlightCode();
-    }, 0);
   }
 
   closePanel(): void {
@@ -168,7 +159,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
 
     const properties: Record<string, any> = {};
 
-    // Extract all properties from all groups
+    // Извлекаем все свойства из всех групп
     this.config.groups.forEach((group) => {
       group.properties.forEach((prop) => {
         properties[prop.id] = prop.value;
@@ -176,5 +167,66 @@ export class DemoPageComponent implements OnInit, AfterViewInit {
     });
 
     return JSON.stringify(properties, null, 2);
+  }
+
+  getCustomFormattedProperties(): string {
+    if (!this.config) return '';
+
+    const properties: Record<string, any> = {};
+
+    // Извлекаем все свойства из всех групп
+    this.config.groups.forEach((group) => {
+      group.properties.forEach((prop) => {
+        properties[prop.id] = prop.value;
+      });
+    });
+
+    // Получаем JSON строку
+    const jsonString = JSON.stringify(properties, null, 2);
+
+    // Форматируем строку с HTML-тегами для подсветки синтаксиса
+    return this.formatJsonWithHtml(jsonString);
+  }
+
+  formatJsonWithHtml(json: string): string {
+    return json
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        (match) => {
+          let cls = 'json-number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'json-key';
+              match = match.replace(
+                /"/g,
+                '<span class="json-punctuation">"</span>'
+              );
+              match = match.replace(
+                /:/g,
+                '<span class="json-punctuation">:</span>'
+              );
+              return `<span class="${cls}">${match}</span>`;
+            } else {
+              cls = 'json-string';
+              match = match.replace(
+                /"/g,
+                '<span class="json-punctuation">"</span>'
+              );
+              return `<span class="${cls}">${match}</span>`;
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'json-boolean';
+          } else if (/null/.test(match)) {
+            cls = 'json-null';
+          }
+          return `<span class="${cls}">${match}</span>`;
+        }
+      )
+      .replace(/[{}[\],]/g, (match) => {
+        return `<span class="json-punctuation">${match}</span>`;
+      });
   }
 }
