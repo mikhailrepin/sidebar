@@ -24,7 +24,7 @@ import {
   imports: [CommonModule, PropertyGroupComponent, DragDropModule],
   template: `
     <div
-      class="flex h-full flex-col bg-elevation-level-1 relative"
+      class="flex h-full flex-col bg-elevation-level-3 relative"
       [style.width.px]="width"
       [ngClass]="{ 'resizing-visual-cue': isResizing }"
     >
@@ -42,7 +42,7 @@ import {
 
       <!-- Header -->
       <div
-        class="flex h-12 items-center justify-between border-b border-elevation-border bg-elevation-level-0 px-4 shadow-sm flex-shrink-0"
+        class="flex h-12 items-center justify-between border-b border-elevation-border bg-elevation-level-2 px-3 flex-shrink-0"
       >
         <h2 class="text-lg font-medium text-text-default">
           {{ config.title }}
@@ -50,7 +50,6 @@ import {
         <div class="flex items-center space-x-2">
           <button
             *ngIf="showCloseButton"
-            (click)="onCloseClick()"
             class="rounded-md p-1 text-text-disabled hover:bg-elevation-level-1 hover:text-text-shaded"
           >
             <svg
@@ -70,7 +69,7 @@ import {
       </div>
 
       <!-- Search Field -->
-      <div class="border-b border-elevation-border px-4 py-2 flex-shrink-0">
+      <div class="border-b border-elevation-border px-3 py-2 flex-shrink-0">
         <div class="relative">
           <div
             class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"

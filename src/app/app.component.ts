@@ -7,9 +7,9 @@ import { CommonModule } from '@angular/common';
   selector: 'app-root',
   imports: [RouterOutlet, CommonModule],
   template: `
-    <main class="flex flex-col h-screen">
+    <main class="flex flex-col h-screen gap-1">
       <header
-        class="bg-elevation-level-3 h-10 flex items-center justify-between px-3 border-b border-elevation-border"
+        class="bg-elevation-level-3 h-12 flex items-center justify-between px-3 border-b border-elevation-border"
       >
         <h1 class="text-text-default text-lg font-semibold">{{ title }}</h1>
         <div class="relative">

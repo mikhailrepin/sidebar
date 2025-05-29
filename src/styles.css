@@ -10,3 +10,7 @@ body {
   height: 100vh;
   overflow: hidden;
 }
+
+button {
+  @apply hover:cursor-pointer disabled:cursor-not-allowed;
+}

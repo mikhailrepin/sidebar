@@ -44,10 +44,10 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
   imports: [CommonModule, HttpClientModule, SidebarPanelComponent, FormsModule],
   encapsulation: ViewEncapsulation.None,
   template: `
-    <div class="flex h-full">
+    <div class="flex h-full gap-1">
       <!-- Main Content -->
       <section
-        class="flex-1 flex flex-col gap-6 bg-elevation-level-0 p-6 h-full max-h-[calc(100vh-40px)] overflow-hidden"
+        class="flex-1 flex flex-col gap-6 bg-elevation-level-3 border-t border-r border-elevation-border p-6 h-full max-h-[calc(100vh-40px)] overflow-hidden"
       >
         <div class="flex flex-col">
           <h1 class="text-xl font-semibold text-text-default">
@@ -81,7 +81,10 @@ import { basicSetup } from 'codemirror'; // Changed from @codemirror/basic-setup
       </section>
 
       <!-- Sidebar -->
-      <div *ngIf="config" class="border-l border-elevation-border h-full">
+      <div
+        *ngIf="config"
+        class="border-l border-t border-elevation-border h-full"
+      >
         <app-sidebar-panel
           [config]="config"
           [width]="sidebarWidth"
