@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { SidebarPanelComponent } from '../../components/sidebar-panel/sidebar-panel.component';
 import { PropSidebarService } from '../../services/prop-sidebar.service';
 import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
@@ -15,7 +16,7 @@ import 'prismjs/components/prism-json';
 @Component({
   selector: 'app-demo-page',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, SidebarPanelComponent],
+  imports: [CommonModule, HttpClientModule, SidebarPanelComponent, FormsModule],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="flex h-full">
@@ -28,27 +29,57 @@ import 'prismjs/components/prism-json';
             Демонстрация панели свойств
           </h1>
           <p class="text-gray-600 pt-2 pb-6">
-            Панель свойств генерируется динамически из JSON конфигурации.
+            Панель свойств генерируется динамически из JSON конфигурации. Ниже
+            вы можете редактировать JSON и применять изменения.
           </p>
-          <button
-            (click)="loadExampleConfig()"
-            class="rounded w-fit bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600 hover:cursor-pointer"
-          >
-            Загрузить конфигурацию
-          </button>
+          <div class="flex gap-4 mb-4">
+            <button
+              (click)="loadExampleIntoTextareaAndApply()"
+              class="rounded w-fit bg-sky-500 px-4 py-2 font-medium text-white hover:bg-sky-600 hover:cursor-pointer"
+            >
+              Загрузить пример
+            </button>
+            <button
+              (click)="applyJsonFromTextarea()"
+              class="rounded w-fit bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600 hover:cursor-pointer"
+            >
+              Применить конфигурацию
+            </button>
+          </div>
         </div>
 
-        <div class="h-full flex flex-col gap-3 pb-2">
-          <h2 class="text-xl font-semibold text-gray-800">
-            Текущие значения свойств:
-          </h2>
-          <div
-            *ngIf="config"
-            class="code-container bg-[#272822] rounded-lg h-[calc(85%-40px)] overflow-y-auto"
-          >
-            <pre
-              class="p-4 text-white"
-            ><code [innerHTML]="getCustomFormattedProperties()"></code></pre>
+        <div class="flex flex-row gap-6 h-[calc(100%-160px)]">
+          <!-- JSON Editor -->
+          <div class="flex-1 flex flex-col gap-3 pb-2">
+            <h2 class="text-xl font-semibold text-gray-800">
+              Редактор конфигурации JSON:
+            </h2>
+            <textarea
+              [(ngModel)]="jsonEditText"
+              class="w-full h-full p-2 border border-gray-300 rounded-md font-mono text-sm resize-none"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <!-- JSON Preview -->
+          <div class="flex-1 flex flex-col gap-3 pb-2">
+            <h2 class="text-xl font-semibold text-gray-800">
+              Текущая конфигурация панели (просмотр):
+            </h2>
+            <div
+              *ngIf="config"
+              class="code-container bg-[#272822] rounded-lg h-full overflow-y-auto"
+            >
+              <pre
+                class="p-4 text-white"
+              ><code [innerHTML]="getCustomFormattedProperties()"></code></pre>
+            </div>
+            <div
+              *ngIf="!config"
+              class="code-container bg-gray-100 rounded-lg h-full overflow-y-auto p-4 text-gray-500"
+            >
+              Конфигурация не загружена.
+            </div>
           </div>
         </div>
       </section>
@@ -105,77 +136,120 @@ import 'prismjs/components/prism-json';
 })
 export class DemoPageComponent implements OnInit, AfterViewInit {
   config: SidebarPanelConfig | null = null;
+  jsonEditText: string = '';
+  private readonly localStorageKey = 'sidebarConfigJson';
 
   constructor(private propSidebarService: PropSidebarService) {}
 
   ngOnInit(): void {
-    // Subscribe to config changes
     this.propSidebarService.config$.subscribe((config) => {
       this.config = config;
+      if (this.config) {
+        const serviceConfigJson = JSON.stringify(this.config, null, 2);
+        if (this.jsonEditText !== serviceConfigJson) {
+          this.jsonEditText = serviceConfigJson;
+        }
+      }
+      this.highlightCode();
     });
-  }
 
-  ngAfterViewInit(): void {
-    // Инициализируем при загрузке компонента
-  }
-
-  highlightCode(): void {
-    if (this.config) {
-      Prism.highlightAll();
+    const savedJsonString = localStorage.getItem(this.localStorageKey);
+    if (savedJsonString) {
+      this.jsonEditText = savedJsonString;
+      this.applyJsonFromTextarea(false);
+    } else {
+      this.loadExampleIntoTextareaAndApply();
     }
   }
 
-  loadExampleConfig(): void {
-    // Загружаем данные напрямую из локального JSON файла
-    this.loadHardcodedConfig();
+  ngAfterViewInit(): void {
+    this.highlightCode();
   }
 
-  loadHardcodedConfig(): void {
-    // Загружаем JSON напрямую из импортированного файла
-    import('../../data/example-panel.json')
-      .then((data) => {
-        this.config = this.propSidebarService.loadFromJson(data.default);
-        console.log('Конфигурация успешно загружена', this.config);
-      })
-      .catch((err) => {
-        console.error('Ошибка загрузки конфигурации:', err);
-      });
+  highlightCode(): void {
+    if (this.config && typeof Prism !== 'undefined' && Prism.highlightAll) {
+      setTimeout(() => {
+        try {
+          Prism.highlightAll();
+        } catch (e: any) {
+          console.warn('Prism.highlightAll() failed', e);
+        }
+      }, 0);
+    }
+  }
+
+  async loadExampleIntoTextareaAndApply(): Promise<void> {
+    try {
+      const data = await import('../../data/example-panel.json');
+      this.jsonEditText = JSON.stringify(data.default, null, 2);
+      this.applyJsonFromTextarea();
+    } catch (err: any) {
+      console.error('Ошибка загрузки примера конфигурации:', err);
+      this.jsonEditText = JSON.stringify(
+        {
+          error: 'Не удалось загрузить пример конфигурации',
+          details: err.message,
+        },
+        null,
+        2
+      );
+      this.applyJsonFromTextarea(false);
+    }
+  }
+
+  applyJsonFromTextarea(saveToLocalStorage: boolean = true): void {
+    try {
+      const parsedConfig = JSON.parse(this.jsonEditText);
+      this.propSidebarService.loadFromJson(parsedConfig);
+
+      if (this.config) {
+        const canonicalJsonString = JSON.stringify(this.config, null, 2);
+        this.jsonEditText = canonicalJsonString;
+
+        if (saveToLocalStorage) {
+          localStorage.setItem(this.localStorageKey, canonicalJsonString);
+          console.log(
+            'Конфигурация успешно применена и сохранена в localStorage.'
+          );
+        } else {
+          console.log('Конфигурация успешно применена.');
+        }
+      } else {
+        console.warn('Конфигурация привела к null значению this.config');
+        if (saveToLocalStorage) {
+          localStorage.removeItem(this.localStorageKey);
+        }
+      }
+    } catch (error: any) {
+      console.error('Ошибка парсинга JSON из редактора:', error);
+      alert(
+        'Ошибка в JSON конфигурации: ' +
+          error.message +
+          '. Проверьте консоль для деталей.'
+      );
+    }
+    this.highlightCode();
   }
 
   onPropertyChange(event: { id: string; value: any }): void {
-    console.log('Свойство изменено:', event);
-
-    // Обновляем свойство в сервисе
+    console.log('Свойство изменено из панели:', event);
     this.propSidebarService.updatePropertyValue(event.id, event.value);
   }
 
   closePanel(): void {
-    this.config = null;
     this.propSidebarService.reset();
-  }
-
-  getFormattedProperties(): string {
-    if (!this.config) return '';
-
-    const properties: Record<string, any> = {};
-
-    // Извлекаем все свойства из всех групп
-    this.config.groups.forEach((group) => {
-      group.properties.forEach((prop) => {
-        properties[prop.id] = prop.value;
-      });
-    });
-
-    return JSON.stringify(properties, null, 2);
+    localStorage.removeItem(this.localStorageKey);
+    this.jsonEditText = '';
+    console.log(
+      'Панель закрыта, конфигурация сброшена и удалена из localStorage.'
+    );
   }
 
   getCustomFormattedProperties(): string {
-    if (!this.config) return '';
-
-    // Получаем JSON строку из всего конфига
+    if (!this.config) {
+      return '';
+    }
     const jsonString = JSON.stringify(this.config, null, 2);
-
-    // Форматируем строку с HTML-тегами для подсветки синтаксиса
     return this.formatJsonWithHtml(jsonString);
   }
 
