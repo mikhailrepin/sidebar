@@ -17,39 +17,29 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="flex flex-col w-full">
-      <div class="flex justify-between items-center mb-2" *ngIf="label">
-        <label [for]="id" class="text-sm font-medium text-text-shaded">{{
-          label
-        }}</label>
-        <span *ngIf="showValue" class="text-sm text-text-disabled">{{
-          value
-        }}</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <input
-          [id]="id"
-          type="range"
-          [min]="min"
-          [max]="max"
-          [step]="step"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="onInputChange($event)"
-          class="w-full h-2 bg-elevation-level-2 rounded-lg appearance-none cursor-pointer accent-primary-default"
-        />
-        <input
-          *ngIf="showInput"
-          type="number"
-          [min]="min"
-          [max]="max"
-          [step]="step"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="onNumberChange($event)"
-          class="w-16 rounded border border-elevation-border px-2 py-1 text-right text-sm"
-        />
-      </div>
+    <div class="flex w-full items-center gap-2">
+      <input
+        [id]="id"
+        type="range"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [disabled]="disabled"
+        [value]="value"
+        (input)="onInputChange($event)"
+        class="w-full h-2 bg-elevation-level-2 rounded-lg appearance-none cursor-pointer accent-primary-default"
+      />
+      <input
+        *ngIf="showInput"
+        type="number"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [disabled]="disabled"
+        [value]="value"
+        (input)="onNumberChange($event)"
+        class="w-16 rounded border border-elevation-border px-2 py-1 text-right text-sm"
+      />
     </div>
   `,
   providers: [
@@ -62,13 +52,11 @@ import {
 })
 export class SliderComponent implements ControlValueAccessor {
   @Input() id: string = '';
-  @Input() label: string = '';
   @Input() min: number = 0;
   @Input() max: number = 100;
   @Input() step: number = 1;
   @Input() disabled: boolean = false;
   @Input() showInput: boolean = false;
-  @Input() showValue: boolean = true;
 
   @Input() value: number = 0;
   @Output() valueChange = new EventEmitter<number>();

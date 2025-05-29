@@ -18,9 +18,6 @@ import {
   imports: [CommonModule, FormsModule],
   template: `
     <div class="flex items-center">
-      <label *ngIf="label" class="mr-3 text-sm font-medium text-text-shaded">
-        {{ label }}
-      </label>
       <button
         type="button"
         role="switch"
@@ -42,7 +39,6 @@ import {
   ],
 })
 export class ToggleComponent implements ControlValueAccessor {
-  @Input() label: string = '';
   @Input() disabled: boolean = false;
 
   @Input() value: boolean = false;

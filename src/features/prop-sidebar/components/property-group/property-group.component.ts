@@ -9,22 +9,21 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
   imports: [CommonModule, PropertyItemComponent],
   template: `
     <div
-      class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2 shadow-sm"
+      class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2"
     >
       <div
-        class="flex cursor-pointer items-center justify-between bg-elevation-level-1 px-4 py-2"
+        class="flex gap-2 cursor-pointer items-center justify-between bg-elevation-level-1 px-2 py-2"
         [ngClass]="{
           'rounded-t-md border-b border-elevation-border': isExpanded,
           'rounded-md': !isExpanded
         }"
         (click)="toggleExpanded()"
       >
-        <h3 class="text-sm font-medium text-text-shaded">{{ group.title }}</h3>
         <div class="flex items-center">
           <button
             *ngIf="showEditButton"
             (click)="onEditClick($event)"
-            class="mr-2 rounded-md p-1 text-text-shaded hover:bg-elevation-level-2 hover:text-text-default"
+            class="mr-2 rounded-md p-1 text-text-default hover:bg-elevation-level-2 hover:text-text-default"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -51,8 +50,11 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
             />
           </svg>
         </div>
+        <h3 class="text-sm font-medium text-text-default w-full">
+          {{ group.title }}
+        </h3>
       </div>
-      <div *ngIf="isExpanded" class="p-4">
+      <div *ngIf="isExpanded" class="flex flex-col gap-2 p-4">
         <ng-container *ngFor="let property of group.properties">
           <app-property-item
             [property]="property"

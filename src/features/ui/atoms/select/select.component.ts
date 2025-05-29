@@ -18,43 +18,34 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="flex flex-col">
-      <label
-        *ngIf="label"
-        [for]="id"
-        class="mb-1 text-sm font-medium text-text-shaded"
+    <div class="relative">
+      <select
+        [id]="id"
+        [disabled]="disabled"
+        [value]="value"
+        (change)="onChange($event)"
+        class="appearance-none bg-elevation-level-0 pr-8 shadow-sm"
       >
-        {{ label }}
-      </label>
-      <div class="relative">
-        <select
-          [id]="id"
-          [disabled]="disabled"
-          [value]="value"
-          (change)="onChange($event)"
-          class="appearance-none bg-elevation-level-0 pr-8 shadow-sm"
+        <option
+          *ngFor="let option of options"
+          [value]="option.value"
+          [selected]="option.value === value"
         >
-          <option
-            *ngFor="let option of options"
-            [value]="option.value"
-            [selected]="option.value === value"
-          >
-            {{ option.label }}
-          </option>
-        </select>
-        <div
-          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-text-shaded"
+          {{ option.label }}
+        </option>
+      </select>
+      <div
+        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-text-shaded"
+      >
+        <svg
+          class="h-4 w-4 fill-current"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
         >
-          <svg
-            class="h-4 w-4 fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            />
-          </svg>
-        </div>
+          <path
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          />
+        </svg>
       </div>
     </div>
   `,
@@ -68,7 +59,6 @@ import { OptionItem } from '../../../prop-sidebar/types/prop-sidebar.types';
 })
 export class SelectComponent implements ControlValueAccessor {
   @Input() id: string = '';
-  @Input() label: string = '';
   @Input() disabled: boolean = false;
   @Input() options: OptionItem[] = [];
 

@@ -17,26 +17,17 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="flex flex-col">
-      <label
-        *ngIf="label"
-        [for]="id"
-        class="mb-1 text-sm font-medium text-text-shaded"
-      >
-        {{ label }}
-      </label>
-      <div class="relative">
-        <input
-          [id]="id"
-          [type]="type"
-          [placeholder]="placeholder"
-          [disabled]="disabled"
-          [readonly]="readonly"
-          [value]="value"
-          (input)="onInputChange($event)"
-          class=""
-        />
-      </div>
+    <div class="relative">
+      <input
+        [id]="id"
+        [type]="type"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [value]="value"
+        (input)="onInputChange($event)"
+        class=""
+      />
     </div>
   `,
   providers: [
@@ -49,7 +40,6 @@ import {
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() id: string = '';
-  @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' = 'text';
   @Input() placeholder: string = '';
   @Input() disabled: boolean = false;

@@ -17,35 +17,26 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="flex flex-col">
-      <label
-        *ngIf="label"
-        [for]="id"
-        class="mb-1 text-sm font-medium text-text-shaded"
-      >
-        {{ label }}
-      </label>
-      <div class="flex items-center gap-2">
-        <div
-          class="w-8 h-8 rounded-md border border-elevation-border shadow-sm"
-          [style.backgroundColor]="value"
-        ></div>
-        <input
-          [id]="id"
-          type="text"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="onInputChange($event)"
-          class="rounded border border-elevation-border px-3 py-1 text-sm shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled w-32"
-        />
-        <input
-          type="color"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="onColorChange($event)"
-          class="h-8 w-8 cursor-pointer rounded border-0 bg-transparent p-0"
-        />
-      </div>
+    <div class="flex items-center gap-2">
+      <div
+        class="w-8 h-8 rounded-md border border-elevation-border shadow-sm"
+        [style.backgroundColor]="value"
+      ></div>
+      <input
+        [id]="id"
+        type="text"
+        [disabled]="disabled"
+        [value]="value"
+        (input)="onInputChange($event)"
+        class="rounded border border-elevation-border px-3 py-1 text-sm shadow-sm focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled w-32"
+      />
+      <input
+        type="color"
+        [disabled]="disabled"
+        [value]="value"
+        (input)="onColorChange($event)"
+        class="h-8 w-8 cursor-pointer rounded border-0 bg-transparent p-0"
+      />
     </div>
   `,
   providers: [
@@ -58,7 +49,6 @@ import {
 })
 export class ColorPickerComponent implements ControlValueAccessor {
   @Input() id: string = '';
-  @Input() label: string = '';
   @Input() disabled: boolean = false;
 
   @Input() value: string = '#000000';
