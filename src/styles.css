@@ -4,7 +4,7 @@
 
 html,
 body {
-  @apply bg-zinc-200;
+  @apply bg-[var(--color-elevation-level-0)] text-sm;
   margin: 0;
   padding: 0;
   height: 100vh;
