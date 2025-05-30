@@ -5,7 +5,21 @@
   "projects": {
     "sidebar": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "css",
+          "standalone": true,
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "standalone": true,
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true,
+          "skipTests": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -16,9 +30,7 @@
             "outputPath": "dist/sidebar",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -26,23 +38,34 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
+            "styles": ["src/styles.css"],
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "prismjs",
+              "codemirror",
+              "@codemirror/autocomplete",
+              "@codemirror/commands",
+              "@codemirror/language",
+              "@codemirror/lint",
+              "@codemirror/search",
+              "@codemirror/state",
+              "@codemirror/view",
+              "@codemirror/theme-one-dark",
+              "@codemirror/lang-json"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "50kB",
+                  "maximumError": "100kB"
                 }
               ],
               "outputHashing": "all"
@@ -50,7 +73,20 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "50kB",
+                  "maximumError": "100kB"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -62,7 +98,8 @@
               "buildTarget": "sidebar:build:production"
             },
             "development": {
-              "buildTarget": "sidebar:build:development"
+              "buildTarget": "sidebar:build:development",
+              "hmr": true
             }
           },
           "defaultConfiguration": "development"
@@ -73,10 +110,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
@@ -84,9 +118,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": ["src/styles.css"],
             "scripts": []
           }
         }

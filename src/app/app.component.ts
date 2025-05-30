@@ -60,7 +60,7 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
   styles: `
     @import '../styles.css';
     .theme-dropdown-menu {
-      @apply absolute top-[calc(100%+4px)] right-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-xl flex flex-col gap-2 p-2 z-50 border border-elevation-border;
+      @apply absolute top-[calc(100%+4px)] right-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-lg flex flex-col gap-2 p-2 z-50 border border-elevation-border;
     }
     .theme-dropdown-item {
       @apply flex items-center gap-2 px-2 h-8 rounded-sm text-sm;
