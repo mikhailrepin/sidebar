@@ -47,23 +47,25 @@ import {
       <div
         class="flex h-12 items-center justify-between border-b border-elevation-border bg-elevation-level-2 px-3 flex-shrink-0"
       >
-        <h2 class="text-lg font-medium text-text-default">
+        <h2
+          class="text-lg font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden"
+        >
           {{ config.title }}
         </h2>
         <div class="flex items-center space-x-2">
           <button
             *ngIf="showCloseButton"
-            class="rounded-md p-1 text-text-disabled hover:bg-elevation-level-1 hover:text-text-shaded"
+            class="rounded-sm flex items-center justify-center w-8 h-8 text-text-default hover:bg-secondary-default hover:text-text-shaded"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              viewBox="0 0 20 20"
+              class="h-4 w-4"
+              viewBox="0 0 2 12"
               fill="currentColor"
             >
               <path
                 fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                d="M1 0C.45 0 0 .45 0 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Zm0 10c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Zm0-5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Z"
                 clip-rule="evenodd"
               />
             </svg>

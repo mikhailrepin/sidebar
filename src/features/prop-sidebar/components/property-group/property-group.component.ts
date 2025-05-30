@@ -33,7 +33,9 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
           <path fill-rule="evenodd" d="m6 14 6-6-6-6v12Z" clip-rule="evenodd" />
         </svg>
         <!-- group title -->
-        <h3 class="text-sm font-medium text-text-default w-full">
+        <h3
+          class="text-sm font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden"
+        >
           {{ group.title }}
         </h3>
         <!-- group controls -->
