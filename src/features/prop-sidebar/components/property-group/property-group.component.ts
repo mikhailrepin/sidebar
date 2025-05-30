@@ -41,14 +41,14 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
           <svg
             *ngIf="isAccordion()"
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 transform transition-transform duration-200"
-            [ngClass]="{ 'rotate-180': !isExpanded }"
-            viewBox="0 0 20 20"
+            class="h-4 w-4 transform transition-transform duration-200"
+            [ngClass]="{ 'rotate-90': isExpanded }"
+            viewBox="0 0 16 16"
             fill="currentColor"
           >
             <path
               fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              d="m6 14 6-6-6-6v12Z"
               clip-rule="evenodd"
             />
           </svg>
