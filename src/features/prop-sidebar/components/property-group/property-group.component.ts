@@ -16,8 +16,8 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
         [class.cursor-pointer]="isAccordion()"
         [ngClass]="{
           'rounded-t-md border-b border-elevation-border':
-            isAccordion() && isExpanded,
-          'rounded-md': !isAccordion() || !isExpanded
+            !isAccordion() || isExpanded,
+          'rounded-md': isAccordion() && !isExpanded
         }"
         (click)="toggleExpanded()"
       >
