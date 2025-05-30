@@ -60,7 +60,7 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class AppComponent implements OnInit {
-  title = 'FormGen 1.0';
+  title = 'FormGen 1.1';
   isThemeDropdownOpen = false;
   availableThemes: { name: Theme; displayText: string }[] = [];
   currentTheme: Theme = 'light';
