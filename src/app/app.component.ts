@@ -79,36 +79,29 @@ export class AppComponent implements OnInit {
     this.updateButtonIcon(this.userSelectedThemePreference);
 
     this.themeService.currentTheme$.subscribe((actuallyAppliedTheme) => {
-      // currentTheme$ now gives the theme that is *actually* applied (e.g., 'light' or 'dark', never 'system').
-      // We don't need to update userSelectedThemePreference here because that reflects the user's choice (which might be 'system').
-      // We only need to update the icon if 'system' was selected, to reflect the actual theme.
       console.log(
         'AppComponent: Applied theme changed to:',
         actuallyAppliedTheme
       );
-      if (this.userSelectedThemePreference === 'system') {
-        this.updateButtonIcon('system'); // This will resolve to the correct light/dark icon
-      }
+      // selectedThemeIcon is now driven by userSelectedThemePreference directly via updateButtonIcon,
+      // so no need to call updateButtonIcon here again based on actuallyAppliedTheme for 'system' preference.
     });
   }
 
   private updateButtonIcon(themePreference: Theme): void {
-    let iconName = '';
-    if (themePreference === 'system') {
-      // If system is preferred, icon should be based on the *actually applied* theme (light/dark)
-      const actualTheme = this.themeService.getCurrentTheme(); // Get the resolved theme (light/dark)
-      const themeDetails = this.availableThemes.find(
-        (t) => t.name === actualTheme
-      );
-      iconName = themeDetails?.icon || 'theme-system'; // Fallback to system icon if something is off
+    const themeDetails = this.availableThemes.find(
+      (t) => t.name === themePreference
+    );
+
+    if (themeDetails) {
+      this.selectedThemeIcon = themeDetails.icon;
     } else {
-      // For specific themes, use their direct icon
-      const themeDetails = this.availableThemes.find(
-        (t) => t.name === themePreference
+      // Fallback, though themePreference should always be a valid theme name
+      this.selectedThemeIcon = 'theme-system'; // Default to system icon or handle error
+      console.warn(
+        `Theme details not found for preference: ${themePreference}, defaulting icon.`
       );
-      iconName = themeDetails?.icon || '';
     }
-    this.selectedThemeIcon = iconName;
     console.log(
       'AppComponent: Button icon updated to:',
       this.selectedThemeIcon,
