@@ -106,7 +106,6 @@ import {
         >
           <app-property-group
             [group]="group"
-            [showEditButton]="showEditButtons"
             (propertyChange)="onPropertyChange($event)"
           ></app-property-group>
         </ng-container>
@@ -134,7 +133,6 @@ import {
 export class SidebarPanelComponent {
   @Input() config!: SidebarPanelConfig;
   @Input() showCloseButton: boolean = true;
-  @Input() showEditButtons: boolean = false;
   @Input() width: number = 384;
 
   @Output() close = new EventEmitter<void>();

@@ -100,6 +100,7 @@
       "title": "Group 2 [readonly]",
       "expanded": false,
       "readonly": true,
+      "edit": true,
       "properties": [
         {
           "id": "database_address",

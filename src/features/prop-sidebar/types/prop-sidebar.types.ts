@@ -89,6 +89,7 @@ export interface PropertyGroup {
   title: string;
   expanded?: boolean;
   readonly?: boolean;
+  edit?: boolean;
   accordion?: boolean;
   properties: PropertyItem[];
   groups?: PropertyGroup[];

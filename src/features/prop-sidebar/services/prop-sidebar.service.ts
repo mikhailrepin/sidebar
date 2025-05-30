@@ -85,6 +85,7 @@ export class PropSidebarService {
         title: groupData.title,
         expanded: groupData.expanded !== undefined ? groupData.expanded : true,
         readonly: groupData.readonly || false,
+        edit: groupData.edit,
         accordion:
           groupData.accordion === undefined ? true : groupData.accordion,
         properties,

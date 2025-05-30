@@ -21,9 +21,26 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
         }"
         (click)="toggleExpanded()"
       >
+        <!-- accordion icon -->
+        <svg
+          *ngIf="isAccordion()"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 transform transition-transform duration-200"
+          [ngClass]="{ 'rotate-90': isExpanded }"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="m6 14 6-6-6-6v12Z" clip-rule="evenodd" />
+        </svg>
+        <!-- group title -->
+        <h3 class="text-sm font-medium text-text-default w-full">
+          {{ group.title }}
+        </h3>
+        <!-- group controls -->
         <div class="flex items-center">
+          <!-- edit button -->
           <button
-            *ngIf="showEditButton"
+            *ngIf="group.readonly && group.edit"
             (click)="onEditClick($event)"
             class="mr-2 rounded-md p-1 text-text-default hover:bg-elevation-level-2 hover:text-text-default"
           >
@@ -38,24 +55,8 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
               />
             </svg>
           </button>
-          <svg
-            *ngIf="isAccordion()"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 transform transition-transform duration-200"
-            [ngClass]="{ 'rotate-90': isExpanded }"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="m6 14 6-6-6-6v12Z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <!-- drag handle -->
         </div>
-        <h3 class="text-sm font-medium text-text-default w-full">
-          {{ group.title }}
-        </h3>
       </div>
       <div *ngIf="!isAccordion() || isExpanded" class="flex flex-col gap-3 p-4">
         <ng-container
@@ -73,7 +74,6 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
         >
           <app-property-group
             [group]="subGroup"
-            [showEditButton]="showEditButton"
             (propertyChange)="onPropertyChange($event)"
           ></app-property-group>
         </ng-container>
@@ -83,7 +83,6 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
 })
 export class PropertyGroupComponent {
   @Input() group!: PropertyGroup;
-  @Input() showEditButton: boolean = false;
 
   @Output() propertyChange = new EventEmitter<{ id: string; value: any }>();
 
