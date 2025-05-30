@@ -20,11 +20,17 @@ import {
   CdkDragStart,
   CdkDragEnd,
 } from '@angular/cdk/drag-drop';
+import { IconComponent } from '../../../ui/atoms/icon/icon.component';
 
 @Component({
   selector: 'app-sidebar-panel',
   standalone: true,
-  imports: [CommonModule, PropertyGroupComponent, DragDropModule],
+  imports: [
+    CommonModule,
+    PropertyGroupComponent,
+    DragDropModule,
+    IconComponent,
+  ],
   template: `
     <div
       class="flex h-full flex-col bg-elevation-level-3 relative"
@@ -57,18 +63,7 @@ import {
             *ngIf="showCloseButton"
             class="rounded-sm flex items-center justify-center w-8 h-8 text-text-default hover:bg-secondary-default hover:text-text-shaded"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              viewBox="0 0 2 12"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M1 0C.45 0 0 .45 0 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Zm0 10c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Zm0-5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1Z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            <app-icon name="more-y" />
           </button>
         </div>
       </div>
