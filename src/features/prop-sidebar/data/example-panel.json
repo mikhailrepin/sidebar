@@ -126,51 +126,52 @@
       "title": "Group 3 [multi-group]",
       "expanded": false,
       "accordion": true,
-      "properties": [
+      "properties": [],
+      "groups": [
         {
-          "id": "general_pen_props",
-          "type": "readonly",
-          "label": "General pen props [no accordion]",
-          "value": ""
-        },
-        {
-          "id": "grid_style",
-          "type": "select",
-          "label": "Grid style:",
-          "value": "solid",
-          "options": [
+          "id": "general_pen_props_group",
+          "title": "General pen props [no accordion]",
+          "expanded": true,
+          "accordion": false,
+          "properties": [
             {
-              "label": "Solid",
-              "value": "solid"
+              "id": "grid_style",
+              "type": "select",
+              "label": "Grid style:",
+              "value": "solid",
+              "options": [
+                {
+                  "label": "Solid",
+                  "value": "solid"
+                },
+                {
+                  "label": "Dashed",
+                  "value": "dashed"
+                },
+                {
+                  "label": "Dotted",
+                  "value": "dotted"
+                },
+                {
+                  "label": "Double",
+                  "value": "double"
+                }
+              ]
             },
             {
-              "label": "Dashed",
-              "value": "dashed"
+              "id": "grid_color",
+              "type": "color",
+              "label": "Grid color:",
+              "value": "#C9CCD6"
             },
             {
-              "label": "Dotted",
-              "value": "dotted"
-            },
-            {
-              "label": "Double",
-              "value": "double"
+              "id": "background_color",
+              "type": "color",
+              "label": "Background color:",
+              "value": "#F9F9F9"
             }
           ]
         },
-        {
-          "id": "grid_color",
-          "type": "color",
-          "label": "Grid color:",
-          "value": "#C9CCD6"
-        },
-        {
-          "id": "background_color",
-          "type": "color",
-          "label": "Background color:",
-          "value": "#F9F9F9"
-        }
-      ],
-      "groups": [
         {
           "id": "temperature",
           "title": "Temperature",
