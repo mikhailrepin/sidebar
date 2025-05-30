@@ -108,6 +108,7 @@ import {
           <!-- Toggle -->
           <ui-toggle
             *ngSwitchCase="'toggle'"
+            [id]="property.id"
             [value]="getToggleValue()"
             [disabled]="property.disabled || readonly"
             (valueChange)="onValueChange($event)"

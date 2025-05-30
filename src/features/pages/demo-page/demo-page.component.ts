@@ -268,7 +268,9 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // Состояние кнопок обновляем в любом случае, так как оно зависит и от редактора, и от сервиса.
-        this.updateButtonStates();
+        setTimeout(() => {
+          this.updateButtonStates();
+        });
       }
     );
 
@@ -294,7 +296,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initCodeMirror(this.jsonEditText);
     // Первоначальное состояние кнопок после инициализации CodeMirror с начальным текстом
-    this.updateButtonStates();
+    setTimeout(() => this.updateButtonStates());
 
     // Subscribe to theme changes to re-initialize CodeMirror with the correct theme
     this.themeService.currentTheme$.subscribe((theme) => {
@@ -337,7 +339,7 @@ export class DemoPageComponent implements OnInit, AfterViewInit, OnDestroy {
         EditorView.updateListener.of((update: ViewUpdate) => {
           if (update.docChanged) {
             this.jsonEditText = update.state.doc.toString();
-            this.updateButtonStates();
+            setTimeout(() => this.updateButtonStates());
           }
         }),
       ];

@@ -21,6 +21,7 @@ import {
       <button
         type="button"
         role="switch"
+        [id]="id"
         [attr.aria-checked]="value"
         [attr.disabled]="disabled ? true : null"
         (click)="toggle()"
@@ -39,6 +40,7 @@ import {
   ],
 })
 export class ToggleComponent implements ControlValueAccessor {
+  @Input() id: string = '';
   @Input() disabled: boolean = false;
 
   @Input() value: boolean = false;
