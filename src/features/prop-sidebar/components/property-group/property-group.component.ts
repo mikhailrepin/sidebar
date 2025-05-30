@@ -58,25 +58,38 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
           <!-- drag handle -->
         </div>
       </div>
-      <div *ngIf="!isAccordion() || isExpanded" class="flex flex-col gap-3 p-4">
-        <ng-container
-          *ngFor="let property of group.properties; trackBy: trackByPropertyId"
-        >
-          <app-property-item
-            [property]="property"
-            [readonly]="group.readonly || false"
-            (valueChange)="onPropertyChange($event)"
-          ></app-property-item>
-        </ng-container>
-        <!-- Render nested groups -->
-        <ng-container
-          *ngFor="let subGroup of group.groups; trackBy: trackByGroupId"
-        >
-          <app-property-group
-            [group]="subGroup"
-            (propertyChange)="onPropertyChange($event)"
-          ></app-property-group>
-        </ng-container>
+      <div
+        class="grid overflow-hidden transition-all duration-300 ease-in-out"
+        [ngClass]="{
+          'grid-rows-[1fr] opacity-100': !isAccordion() || isExpanded,
+          'grid-rows-[0fr] opacity-0': isAccordion() && !isExpanded
+        }"
+      >
+        <div class="overflow-hidden">
+          <div class="flex flex-col gap-3 p-4">
+            <ng-container
+              *ngFor="
+                let property of group.properties;
+                trackBy: trackByPropertyId
+              "
+            >
+              <app-property-item
+                [property]="property"
+                [readonly]="group.readonly || false"
+                (valueChange)="onPropertyChange($event)"
+              ></app-property-item>
+            </ng-container>
+            <!-- Render nested groups -->
+            <ng-container
+              *ngFor="let subGroup of group.groups; trackBy: trackByGroupId"
+            >
+              <app-property-group
+                [group]="subGroup"
+                (propertyChange)="onPropertyChange($event)"
+              ></app-property-group>
+            </ng-container>
+          </div>
+        </div>
       </div>
     </div>
   `,

@@ -117,7 +117,7 @@ import {
           <ui-input
             *ngSwitchCase="'readonly'"
             [id]="property.id"
-            [value]="property.value?.toString() ?? ''"
+            [value]="property.value.toString()"
             [disabled]="true"
             [readonly]="true"
           ></ui-input>
