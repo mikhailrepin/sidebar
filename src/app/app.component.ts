@@ -1,4 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ElementRef,
+  ViewChild,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService, Theme } from './services/theme.service';
 import { CommonModule } from '@angular/common';
@@ -16,8 +24,9 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
         <h1 class="text-text-default text-2xl font-semibold px-4">
           🎛️ _{{ title }}
         </h1>
-        <div class="relative h-full flex items-center">
+        <div #themeDropdownContainer class="relative h-full flex items-center">
           <button
+            #themeButton
             (click)="toggleThemeDropdown()"
             class="focus:outline-none flex items-center justify-center px-5 h-full hover:bg-primary-shaded-200 hover:cursor-pointer"
             [ngClass]="{
@@ -26,7 +35,11 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
           >
             <app-icon [name]="selectedThemeIcon" />
           </button>
-          <div *ngIf="isThemeDropdownOpen" class="theme-dropdown-menu">
+          <div
+            #themeMenu
+            *ngIf="isThemeDropdownOpen"
+            class="theme-dropdown-menu"
+          >
             <a
               *ngFor="let theme of availableThemes"
               (click)="selectTheme(theme.name)"
@@ -47,7 +60,7 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
   styles: `
     @import '../styles.css';
     .theme-dropdown-menu {
-      @apply absolute top-[calc(100%+4px)] right-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-lg flex flex-col gap-2 p-2 z-50 border border-elevation-border;
+      @apply absolute top-[calc(100%+4px)] right-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-xl flex flex-col gap-2 p-2 z-50 border border-elevation-border;
     }
     .theme-dropdown-item {
       @apply flex items-center gap-2 px-2 h-8 rounded-sm text-sm;
@@ -60,7 +73,7 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
     }
   `,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'FormGen 1.1';
   isThemeDropdownOpen = false;
   availableThemes: { name: Theme; displayText: string; icon: string }[] = [];
@@ -70,7 +83,14 @@ export class AppComponent implements OnInit {
   // Tracks the icon to display on the button, based on userSelectedThemePreference or the actual theme if 'system' is chosen
   selectedThemeIcon: string = '';
 
-  constructor(private themeService: ThemeService) {}
+  @ViewChild('themeButton') themeButton!: ElementRef;
+  @ViewChild('themeMenu') themeMenu!: ElementRef;
+  @ViewChild('themeDropdownContainer') themeDropdownContainer!: ElementRef;
+
+  constructor(
+    private themeService: ThemeService,
+    private elementRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.availableThemes = this.themeService.getAvailableThemes();
@@ -86,6 +106,27 @@ export class AppComponent implements OnInit {
       // selectedThemeIcon is now driven by userSelectedThemePreference directly via updateButtonIcon,
       // so no need to call updateButtonIcon here again based on actuallyAppliedTheme for 'system' preference.
     });
+  }
+
+  ngOnDestroy(): void {
+    // No explicit unsubscription needed for document click listener if managed by HostListener
+    // and component destruction, or if we add/remove it manually.
+    // For HostListener, Angular handles cleanup.
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isThemeDropdownOpen) {
+      // Check if the click was outside the dropdown container
+      const clickedInsideContainer =
+        this.themeDropdownContainer.nativeElement.contains(
+          event.target as Node
+        );
+      if (!clickedInsideContainer) {
+        this.isThemeDropdownOpen = false;
+        console.log('Clicked outside, closing dropdown.');
+      }
+    }
   }
 
   private updateButtonIcon(themePreference: Theme): void {
@@ -112,6 +153,7 @@ export class AppComponent implements OnInit {
 
   toggleThemeDropdown(): void {
     this.isThemeDropdownOpen = !this.isThemeDropdownOpen;
+    console.log('Toggled dropdown, open state:', this.isThemeDropdownOpen);
   }
 
   selectTheme(themeName: Theme): void {
