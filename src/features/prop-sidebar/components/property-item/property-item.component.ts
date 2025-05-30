@@ -35,7 +35,7 @@ import {
     <div class="flex items-start">
       <label
         [for]="property.id"
-        class="w-2/5 pr-2 text-left text-sm font-medium text-text-default py-1"
+        class="w-2/5 pr-2 pl-1 text-left text-sm font-medium text-text-default py-1"
       >
         {{ property.label }}
       </label>

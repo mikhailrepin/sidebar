@@ -4,12 +4,7 @@
 
 html,
 body {
-  @apply bg-elevation-level-0 m-0 p-0 h-screen overflow-hidden text-sm;
-}
-
-@theme {
-  --text-base: 16px;
-  --text-sm: 12px;
+  @apply bg-elevation-level-0 m-0 p-0 h-screen overflow-hidden text-sm text-text-default;
 }
 
 * {

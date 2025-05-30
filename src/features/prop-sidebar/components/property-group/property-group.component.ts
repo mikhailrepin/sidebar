@@ -58,7 +58,7 @@ import { IconComponent } from '../../../ui/atoms/icon/icon.component';
         }"
       >
         <div class="overflow-hidden">
-          <div class="flex flex-col gap-3 p-4">
+          <div class="flex flex-col gap-3 p-3">
             <ng-container
               *ngFor="
                 let property of group.properties;

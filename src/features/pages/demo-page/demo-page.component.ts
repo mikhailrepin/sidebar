@@ -82,13 +82,14 @@ const overrideDarkBackgroundTheme = EditorView.theme(
           class="w-full h-full border border-elevation-border rounded-md overflow-hidden"
         ></div>
 
-        <div class="justify-end flex gap-4">
+        <div class="justify-end flex gap-3">
           <app-button
             variant="secondary"
             buttonStyle="outline"
             [disabled]="isResetDisabled"
             size="big"
-            label="Сбросить конфигурацию"
+            rightIcon="edit-reset"
+            label="Сбросить"
             (click)="loadExampleIntoTextareaAndApply()"
           />
           <app-button
@@ -96,7 +97,8 @@ const overrideDarkBackgroundTheme = EditorView.theme(
             buttonStyle="fill"
             [disabled]="isApplyDisabled"
             size="big"
-            label="Применить конфигурацию"
+            rightIcon="check-single"
+            label="Применить"
             (click)="applyJsonFromTextarea()"
           />
         </div>
