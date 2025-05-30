@@ -42,53 +42,55 @@ export class PropSidebarService {
    * @returns The validated and transformed SidebarPanelConfig
    */
   private validateConfig(data: any): SidebarPanelConfig {
-    // Check if the data has the required fields
     if (!data.id || !data.title || !Array.isArray(data.groups)) {
       throw new Error('Invalid panel configuration: missing required fields');
     }
 
-    // Process and validate groups
-    const groups: PropertyGroup[] = data.groups.map((groupData: any) => {
-      if (
-        !groupData.id ||
-        !groupData.title ||
-        !Array.isArray(groupData.properties)
-      ) {
+    return {
+      id: data.id,
+      title: data.title,
+      groups: this.processGroups(data.groups),
+      minWidth: data.minWidth,
+      maxWidth: data.maxWidth,
+    };
+  }
+
+  private processGroups(groupDataArray: any[]): PropertyGroup[] {
+    return groupDataArray.map((groupData: any) => {
+      if (!groupData.id || !groupData.title) {
         throw new Error(
-          `Invalid group configuration: ${JSON.stringify(groupData)}`
+          `Invalid group configuration: missing id or title in ${JSON.stringify(
+            groupData
+          )}`
         );
       }
 
-      // Process and validate properties
-      const properties: PropertyItem[] = groupData.properties.map(
-        (propData: any) => {
-          if (!propData.id || !propData.label || !propData.type) {
-            throw new Error(
-              `Invalid property configuration: ${JSON.stringify(propData)}`
-            );
-          }
+      const properties: PropertyItem[] = groupData.properties
+        ? groupData.properties.map((propData: any) => {
+            if (!propData.id || !propData.label || !propData.type) {
+              throw new Error(
+                `Invalid property configuration: ${JSON.stringify(propData)}`
+              );
+            }
+            return this.validateProperty(propData);
+          })
+        : [];
 
-          // Ensure the property has the correct structure based on its type
-          return this.validateProperty(propData);
-        }
-      );
+      const nestedGroups: PropertyGroup[] | undefined = groupData.groups
+        ? this.processGroups(groupData.groups)
+        : undefined;
 
       return {
         id: groupData.id,
         title: groupData.title,
         expanded: groupData.expanded !== undefined ? groupData.expanded : true,
         readonly: groupData.readonly || false,
+        accordion:
+          groupData.accordion === undefined ? true : groupData.accordion,
         properties,
+        groups: nestedGroups,
       };
     });
-
-    return {
-      id: data.id,
-      title: data.title,
-      groups,
-      minWidth: data.minWidth,
-      maxWidth: data.maxWidth,
-    };
   }
 
   /**
@@ -202,27 +204,45 @@ export class PropSidebarService {
     const currentConfig = this.configSubject.value;
     if (!currentConfig) return;
 
-    let updated = false;
+    const updateGroupsRecursively = (
+      groups: PropertyGroup[]
+    ): PropertyGroup[] => {
+      return groups.map((group) => {
+        let groupUpdated = false;
+        const updatedProperties = group.properties.map((prop) => {
+          if (prop.id === propertyId) {
+            groupUpdated = true;
+            return { ...prop, value };
+          }
+          return prop;
+        });
 
-    const updatedGroups = currentConfig.groups.map((group) => {
-      const updatedProperties = group.properties.map((prop) => {
-        if (prop.id === propertyId) {
-          updated = true;
-          return { ...prop, value };
+        let updatedNestedGroups = group.groups;
+        if (group.groups && group.groups.length > 0) {
+          const nestedResult = updateGroupsRecursively(group.groups);
+          if (nestedResult !== group.groups) {
+            updatedNestedGroups = nestedResult;
+            groupUpdated = true;
+          }
         }
-        return prop;
+
+        if (groupUpdated) {
+          return {
+            ...group,
+            properties: updatedProperties,
+            groups: updatedNestedGroups,
+          };
+        }
+        return group;
       });
+    };
 
-      return {
-        ...group,
-        properties: updatedProperties,
-      };
-    });
+    const updatedConfigGroups = updateGroupsRecursively(currentConfig.groups);
 
-    if (updated) {
+    if (updatedConfigGroups !== currentConfig.groups) {
       this.configSubject.next({
         ...currentConfig,
-        groups: updatedGroups,
+        groups: updatedConfigGroups,
       });
     }
   }

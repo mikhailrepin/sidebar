@@ -125,6 +125,7 @@
       "id": "group_3",
       "title": "Group 3 [multi-group]",
       "expanded": false,
+      "accordion": true,
       "properties": [
         {
           "id": "general_pen_props",
@@ -168,234 +169,236 @@
           "label": "Background color:",
           "value": "#F9F9F9"
         }
-      ]
-    },
-    {
-      "id": "temperature",
-      "title": "Temperature",
-      "expanded": false,
-      "properties": [
+      ],
+      "groups": [
         {
-          "id": "temp_pen_name",
-          "type": "text",
-          "label": "Pen name:",
-          "value": "Temperature"
-        },
-        {
-          "id": "temp_pen_data_variable",
-          "type": "text",
-          "label": "Pen data variable:",
-          "value": "localhost:4321/data/examples/mode/variables/temperature"
-        },
-        {
-          "id": "temp_pen_units",
-          "type": "text",
-          "label": "Pen units:",
-          "value": "°C"
-        },
-        {
-          "id": "temp_min_value",
-          "type": "number",
-          "label": "Minimum value :",
-          "value": 0,
-          "min": -50,
-          "max": 50
-        },
-        {
-          "id": "temp_max_value",
-          "type": "number",
-          "label": "Maximum value :",
-          "value": 100,
-          "min": 0,
-          "max": 200
-        },
-        {
-          "id": "temp_min_max_value",
-          "type": "readonly",
-          "label": "Min - Max value :",
-          "value": "0 - 100"
-        },
-        {
-          "id": "temp_stroke_color",
-          "type": "color",
-          "label": "Stroke color:",
-          "value": "#44A854"
-        },
-        {
-          "id": "temp_stroke_style",
-          "type": "select",
-          "label": "Stroke style:",
-          "value": "solid",
-          "options": [
+          "id": "temperature",
+          "title": "Temperature",
+          "expanded": false,
+          "properties": [
             {
-              "label": "Solid",
-              "value": "solid"
+              "id": "temperature_pen_name",
+              "type": "text",
+              "label": "Pen name:",
+              "value": "Temperature"
             },
             {
-              "label": "Dashed",
-              "value": "dashed"
+              "id": "temperature_pen_data_variable",
+              "type": "text",
+              "label": "Pen data variable:",
+              "value": "localhost:4321/data/examples/mode/variables/temperature"
             },
             {
-              "label": "Dotted",
-              "value": "dotted"
+              "id": "temperature_pen_units",
+              "type": "text",
+              "label": "Pen units:",
+              "value": "°C"
             },
             {
-              "label": "Double",
-              "value": "double"
+              "id": "temperature_min_value",
+              "type": "number",
+              "label": "Minimum value :",
+              "value": 0,
+              "min": 0,
+              "max": 100
+            },
+            {
+              "id": "temperature_max_value",
+              "type": "number",
+              "label": "Maximum value :",
+              "value": 100,
+              "min": 0,
+              "max": 200
+            },
+            {
+              "id": "temperature_min_max_value",
+              "type": "readonly",
+              "label": "Min - Max value :",
+              "value": "0 - 100"
+            },
+            {
+              "id": "temperature_stroke_color",
+              "type": "color",
+              "label": "Stroke color:",
+              "value": "#EC8F4C"
+            },
+            {
+              "id": "temperature_stroke_style",
+              "type": "select",
+              "label": "Stroke style:",
+              "value": "solid",
+              "options": [
+                {
+                  "label": "Solid",
+                  "value": "solid"
+                },
+                {
+                  "label": "Dashed",
+                  "value": "dashed"
+                },
+                {
+                  "label": "Dotted",
+                  "value": "dotted"
+                },
+                {
+                  "label": "Double",
+                  "value": "double"
+                }
+              ]
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "speed",
-      "title": "Speed",
-      "expanded": false,
-      "properties": [
-        {
-          "id": "speed_pen_name",
-          "type": "text",
-          "label": "Pen name:",
-          "value": "Speed"
         },
         {
-          "id": "speed_pen_data_variable",
-          "type": "text",
-          "label": "Pen data variable:",
-          "value": "localhost:4321/data/examples/mode/variables/speed"
-        },
-        {
-          "id": "speed_pen_units",
-          "type": "text",
-          "label": "Pen units:",
-          "value": "km/h"
-        },
-        {
-          "id": "speed_min_value",
-          "type": "number",
-          "label": "Minimum value :",
-          "value": 0,
-          "min": 0,
-          "max": 100
-        },
-        {
-          "id": "speed_max_value",
-          "type": "number",
-          "label": "Maximum value :",
-          "value": 230,
-          "min": 0,
-          "max": 500
-        },
-        {
-          "id": "speed_min_max_value",
-          "type": "readonly",
-          "label": "Min - Max value :",
-          "value": "0 - 230"
-        },
-        {
-          "id": "speed_stroke_color",
-          "type": "color",
-          "label": "Stroke color:",
-          "value": "#EC8F4C"
-        },
-        {
-          "id": "speed_stroke_style",
-          "type": "select",
-          "label": "Stroke style:",
-          "value": "solid",
-          "options": [
+          "id": "speed",
+          "title": "Speed",
+          "expanded": false,
+          "properties": [
             {
-              "label": "Solid",
-              "value": "solid"
+              "id": "speed_pen_name",
+              "type": "text",
+              "label": "Pen name:",
+              "value": "Speed"
             },
             {
-              "label": "Dashed",
-              "value": "dashed"
+              "id": "speed_pen_data_variable",
+              "type": "text",
+              "label": "Pen data variable:",
+              "value": "localhost:4321/data/examples/mode/variables/speed"
             },
             {
-              "label": "Dotted",
-              "value": "dotted"
+              "id": "speed_pen_units",
+              "type": "text",
+              "label": "Pen units:",
+              "value": "km/h"
             },
             {
-              "label": "Double",
-              "value": "double"
+              "id": "speed_min_value",
+              "type": "number",
+              "label": "Minimum value :",
+              "value": 0,
+              "min": 0,
+              "max": 100
+            },
+            {
+              "id": "speed_max_value",
+              "type": "number",
+              "label": "Maximum value :",
+              "value": 230,
+              "min": 0,
+              "max": 500
+            },
+            {
+              "id": "speed_min_max_value",
+              "type": "readonly",
+              "label": "Min - Max value :",
+              "value": "0 - 230"
+            },
+            {
+              "id": "speed_stroke_color",
+              "type": "color",
+              "label": "Stroke color:",
+              "value": "#EC8F4C"
+            },
+            {
+              "id": "speed_stroke_style",
+              "type": "select",
+              "label": "Stroke style:",
+              "value": "solid",
+              "options": [
+                {
+                  "label": "Solid",
+                  "value": "solid"
+                },
+                {
+                  "label": "Dashed",
+                  "value": "dashed"
+                },
+                {
+                  "label": "Dotted",
+                  "value": "dotted"
+                },
+                {
+                  "label": "Double",
+                  "value": "double"
+                }
+              ]
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "pressure",
-      "title": "Pressure",
-      "expanded": false,
-      "properties": [
-        {
-          "id": "pressure_pen_name",
-          "type": "text",
-          "label": "Pen name:",
-          "value": "Pressure"
         },
         {
-          "id": "pressure_pen_data_variable",
-          "type": "text",
-          "label": "Pen data variable:",
-          "value": "localhost:4321/data/examples/mode/variables/pressure"
-        },
-        {
-          "id": "pressure_pen_units",
-          "type": "text",
-          "label": "Pen units:",
-          "value": "bar"
-        },
-        {
-          "id": "pressure_min_value",
-          "type": "number",
-          "label": "Minimum value :",
-          "value": 0,
-          "min": 0,
-          "max": 10
-        },
-        {
-          "id": "pressure_max_value",
-          "type": "number",
-          "label": "Maximum value :",
-          "value": 10,
-          "min": 0,
-          "max": 20
-        },
-        {
-          "id": "pressure_min_max_value",
-          "type": "readonly",
-          "label": "Min - Max value :",
-          "value": "0 - 10"
-        },
-        {
-          "id": "pressure_stroke_color",
-          "type": "color",
-          "label": "Stroke color:",
-          "value": "#FF5722"
-        },
-        {
-          "id": "pressure_stroke_style",
-          "type": "select",
-          "label": "Stroke style:",
-          "value": "dashed",
-          "options": [
+          "id": "pressure",
+          "title": "Pressure",
+          "expanded": false,
+          "properties": [
             {
-              "label": "Solid",
-              "value": "solid"
+              "id": "pressure_pen_name",
+              "type": "text",
+              "label": "Pen name:",
+              "value": "Pressure"
             },
             {
-              "label": "Dashed",
-              "value": "dashed"
+              "id": "pressure_pen_data_variable",
+              "type": "text",
+              "label": "Pen data variable:",
+              "value": "localhost:4321/data/examples/mode/variables/pressure"
             },
             {
-              "label": "Dotted",
-              "value": "dotted"
+              "id": "pressure_pen_units",
+              "type": "text",
+              "label": "Pen units:",
+              "value": "bar"
             },
             {
-              "label": "Double",
-              "value": "double"
+              "id": "pressure_min_value",
+              "type": "number",
+              "label": "Minimum value :",
+              "value": 0,
+              "min": 0,
+              "max": 10
+            },
+            {
+              "id": "pressure_max_value",
+              "type": "number",
+              "label": "Maximum value :",
+              "value": 10,
+              "min": 0,
+              "max": 20
+            },
+            {
+              "id": "pressure_min_max_value",
+              "type": "readonly",
+              "label": "Min - Max value :",
+              "value": "0 - 10"
+            },
+            {
+              "id": "pressure_stroke_color",
+              "type": "color",
+              "label": "Stroke color:",
+              "value": "#FF5722"
+            },
+            {
+              "id": "pressure_stroke_style",
+              "type": "select",
+              "label": "Stroke style:",
+              "value": "dashed",
+              "options": [
+                {
+                  "label": "Solid",
+                  "value": "solid"
+                },
+                {
+                  "label": "Dashed",
+                  "value": "dashed"
+                },
+                {
+                  "label": "Dotted",
+                  "value": "dotted"
+                },
+                {
+                  "label": "Double",
+                  "value": "double"
+                }
+              ]
             }
           ]
         }

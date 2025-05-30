@@ -12,10 +12,12 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
       class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2"
     >
       <div
-        class="flex gap-2 cursor-pointer items-center justify-between bg-elevation-level-2 px-2 py-2"
+        class="flex gap-2 items-center justify-between bg-secondary-default px-2 py-2"
+        [class.cursor-pointer]="isAccordion()"
         [ngClass]="{
-          'rounded-t-md border-b border-elevation-border': isExpanded,
-          'rounded-md': !isExpanded
+          'rounded-t-md border-b border-elevation-border':
+            isAccordion() && isExpanded,
+          'rounded-md': !isAccordion() || !isExpanded
         }"
         (click)="toggleExpanded()"
       >
@@ -37,6 +39,7 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
             </svg>
           </button>
           <svg
+            *ngIf="isAccordion()"
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5 transform transition-transform duration-200"
             [ngClass]="{ 'rotate-180': !isExpanded }"
@@ -49,18 +52,31 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
               clip-rule="evenodd"
             />
           </svg>
+          <div *ngIf="!isAccordion()" class="h-5 w-5"></div>
         </div>
         <h3 class="text-sm font-medium text-text-default w-full">
           {{ group.title }}
         </h3>
       </div>
-      <div *ngIf="isExpanded" class="flex flex-col gap-2 p-4">
+      <div
+        *ngIf="!isAccordion() || isExpanded"
+        class="flex flex-col gap-2 p-4"
+        [class.pt-0]="!isAccordion()"
+      >
         <ng-container *ngFor="let property of group.properties">
           <app-property-item
             [property]="property"
             [readonly]="group.readonly || false"
             (valueChange)="onPropertyChange($event)"
           ></app-property-item>
+        </ng-container>
+        <!-- Render nested groups -->
+        <ng-container *ngFor="let subGroup of group.groups">
+          <app-property-group
+            [group]="subGroup"
+            [showEditButton]="showEditButton"
+            (propertyChange)="onPropertyChange($event)"
+          ></app-property-group>
         </ng-container>
       </div>
     </div>
@@ -75,24 +91,30 @@ export class PropertyGroupComponent {
   isExpanded: boolean = true;
 
   ngOnInit() {
-    // Set initial expanded state from input if available
-    if (this.group.expanded !== undefined) {
-      this.isExpanded = this.group.expanded;
+    if (this.isAccordion()) {
+      if (this.group.expanded !== undefined) {
+        this.isExpanded = this.group.expanded;
+      }
+    } else {
+      this.isExpanded = true;
     }
   }
 
+  isAccordion(): boolean {
+    return this.group.accordion !== false;
+  }
+
   toggleExpanded(): void {
-    this.isExpanded = !this.isExpanded;
+    if (this.isAccordion()) {
+      this.isExpanded = !this.isExpanded;
+    }
   }
 
   onEditClick(event: MouseEvent): void {
-    // Stop event propagation to prevent the group from toggling
     event.stopPropagation();
-    // Additional logic for handling edit click
   }
 
   onPropertyChange(event: { id: string; value: any }): void {
-    // Pass the property change event up to parent component
     this.propertyChange.emit(event);
   }
 }

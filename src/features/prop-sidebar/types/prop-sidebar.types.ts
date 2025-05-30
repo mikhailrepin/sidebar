@@ -89,7 +89,9 @@ export interface PropertyGroup {
   title: string;
   expanded?: boolean;
   readonly?: boolean;
+  accordion?: boolean;
   properties: PropertyItem[];
+  groups?: PropertyGroup[];
 }
 
 export interface SidebarPanelConfig {
