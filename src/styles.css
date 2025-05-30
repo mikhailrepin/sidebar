@@ -4,18 +4,12 @@
 
 html,
 body {
-  @apply bg-[var(--color-elevation-level-0)] text-sm;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  overflow: hidden;
+  @apply bg-elevation-level-0 m-0 p-0 h-screen overflow-hidden text-sm;
 }
 
-button {
-  @apply hover:cursor-pointer;
-  &:disabled {
-    pointer-events: none;
-  }
+@theme {
+  --text-base: 16px;
+  --text-sm: 12px;
 }
 
 * {

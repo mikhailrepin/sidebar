@@ -264,8 +264,3 @@
   --color-text-invert: oklch(16% 0 0);
   --color-text-black: oklch(16% 0 0);
 }
-
-html,
-body {
-  @apply bg-elevation-level-0 overflow-hidden text-text-default;
-}

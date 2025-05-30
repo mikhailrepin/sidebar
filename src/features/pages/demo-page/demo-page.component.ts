@@ -8,11 +8,11 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SidebarPanelComponent } from '../../prop-sidebar/components/sidebar-panel/sidebar-panel.component';
 import { PropSidebarService } from '../../prop-sidebar/services/prop-sidebar.service';
 import { SidebarPanelConfig } from '../../prop-sidebar/types/prop-sidebar.types';
+import { ButtonComponent } from '../../ui/atoms/button/button.component';
 // import * as Prism from 'prismjs'; // No longer needed
 // import 'prismjs/components/prism-json'; // No longer needed
 
@@ -59,7 +59,7 @@ const overrideDarkBackgroundTheme = EditorView.theme(
 @Component({
   selector: 'app-demo-page',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, SidebarPanelComponent, FormsModule],
+  imports: [CommonModule, SidebarPanelComponent, FormsModule, ButtonComponent],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="flex h-full gap-1">
@@ -83,20 +83,22 @@ const overrideDarkBackgroundTheme = EditorView.theme(
         ></div>
 
         <div class="justify-end flex gap-4">
-          <button
-            (click)="loadExampleIntoTextareaAndApply()"
+          <app-button
+            variant="secondary"
+            buttonStyle="outline"
             [disabled]="isResetDisabled"
-            class="rounded w-fit px-4 py-2 font-medium text-text-default border border-elevation-border hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary-default"
-          >
-            Сбросить конфигурацию
-          </button>
-          <button
-            (click)="applyJsonFromTextarea()"
+            size="big"
+            label="Сбросить конфигурацию"
+            (click)="loadExampleIntoTextareaAndApply()"
+          />
+          <app-button
+            variant="primary"
+            buttonStyle="fill"
             [disabled]="isApplyDisabled"
-            class="rounded w-fit bg-primary-default px-4 py-2 font-medium text-primary-contrasted hover:bg-primary-invert hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Применить конфигурацию
-          </button>
+            size="big"
+            label="Применить конфигурацию"
+            (click)="applyJsonFromTextarea()"
+          />
         </div>
       </section>
 
