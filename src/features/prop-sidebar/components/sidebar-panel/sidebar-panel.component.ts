@@ -100,7 +100,7 @@ import {
       </div>
 
       <!-- Content -->
-      <div class="flex-1 overflow-y-auto p-3">
+      <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
         <ng-container
           *ngFor="let group of filteredGroups; trackBy: trackByGroupId"
         >

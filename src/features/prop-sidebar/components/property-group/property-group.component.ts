@@ -9,7 +9,7 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
   imports: [CommonModule, PropertyItemComponent],
   template: `
     <div
-      class="mb-2 rounded-md border border-elevation-border bg-elevation-level-2"
+      class=" rounded-md border border-elevation-border bg-elevation-level-2"
     >
       <div
         class="flex gap-2 items-center justify-between bg-secondary-default px-2 py-2"
@@ -60,7 +60,7 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
       </div>
       <div
         *ngIf="!isAccordion() || isExpanded"
-        class="flex flex-col gap-2 p-4"
+        class="flex flex-col gap-3 p-4"
         [class.pt-0]="!isAccordion()"
       >
         <ng-container
