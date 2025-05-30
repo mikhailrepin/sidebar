@@ -26,6 +26,7 @@ import {
         [readonly]="readonly"
         [value]="value"
         (input)="onInputChange($event)"
+        (keyup.enter)="onEnterKey($event)"
         class=""
       />
     </div>
@@ -62,6 +63,10 @@ export class InputComponent implements ControlValueAccessor {
     this.valueChange.emit(newValue);
     this.onChange(newValue);
     this.onTouched();
+  }
+
+  onEnterKey(event: Event): void {
+    (event.target as HTMLElement).blur();
   }
 
   writeValue(value: string | number): void {

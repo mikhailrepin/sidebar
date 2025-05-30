@@ -8,7 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarPanelConfig } from '../../types/prop-sidebar.types';
+import {
+  SidebarPanelConfig,
+  PropertyGroup,
+} from '../../types/prop-sidebar.types';
 import { PropertyGroupComponent } from '../property-group/property-group.component';
 import {
   DragDropModule,
@@ -98,7 +101,9 @@ import {
 
       <!-- Content -->
       <div class="flex-1 overflow-y-auto p-3">
-        <ng-container *ngFor="let group of filteredGroups">
+        <ng-container
+          *ngFor="let group of filteredGroups; trackBy: trackByGroupId"
+        >
           <app-property-group
             [group]="group"
             [showEditButton]="showEditButtons"
@@ -144,6 +149,10 @@ export class SidebarPanelComponent {
 
   filteredGroups = this.config?.groups || [];
   searchQuery: string = '';
+
+  trackByGroupId(index: number, group: PropertyGroup): string {
+    return group.id;
+  }
 
   ngOnChanges() {
     this.filteredGroups = this.config?.groups || [];

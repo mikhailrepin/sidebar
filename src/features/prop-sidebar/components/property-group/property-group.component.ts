@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PropertyGroup } from '../../types/prop-sidebar.types';
+import { PropertyGroup, PropertyItem } from '../../types/prop-sidebar.types';
 import { PropertyItemComponent } from '../property-item/property-item.component';
 
 @Component({
@@ -63,7 +63,9 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
         class="flex flex-col gap-2 p-4"
         [class.pt-0]="!isAccordion()"
       >
-        <ng-container *ngFor="let property of group.properties">
+        <ng-container
+          *ngFor="let property of group.properties; trackBy: trackByPropertyId"
+        >
           <app-property-item
             [property]="property"
             [readonly]="group.readonly || false"
@@ -71,7 +73,9 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
           ></app-property-item>
         </ng-container>
         <!-- Render nested groups -->
-        <ng-container *ngFor="let subGroup of group.groups">
+        <ng-container
+          *ngFor="let subGroup of group.groups; trackBy: trackByGroupId"
+        >
           <app-property-group
             [group]="subGroup"
             [showEditButton]="showEditButton"
@@ -116,5 +120,13 @@ export class PropertyGroupComponent {
 
   onPropertyChange(event: { id: string; value: any }): void {
     this.propertyChange.emit(event);
+  }
+
+  trackByPropertyId(index: number, property: PropertyItem): string {
+    return property.id;
+  }
+
+  trackByGroupId(index: number, group: PropertyGroup): string {
+    return group.id;
   }
 }
