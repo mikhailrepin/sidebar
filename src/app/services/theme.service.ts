@@ -13,11 +13,15 @@ export class ThemeService {
   );
   currentTheme$ = this.currentThemeSubject.asObservable();
 
-  themes: { name: Theme; displayText: string }[] = [
-    { name: 'light', displayText: 'Светлая' },
-    { name: 'dark', displayText: 'Темная' },
-    { name: 'midnight', displayText: 'Полночь' },
-    { name: 'dark-gold', displayText: 'Тёмное золото' },
+  themes: { name: Theme; displayText: string; icon: string }[] = [
+    { name: 'light', displayText: 'Светлая', icon: 'theme-light' },
+    { name: 'dark', displayText: 'Тёмная', icon: 'theme-dark' },
+    { name: 'midnight', displayText: 'Полночь', icon: 'theme-dark' },
+    {
+      name: 'dark-gold',
+      displayText: 'Тёмное золото',
+      icon: 'theme-dark',
+    },
   ];
 
   constructor(rendererFactory: RendererFactory2) {
@@ -59,7 +63,7 @@ export class ThemeService {
     return this.currentThemeSubject.value;
   }
 
-  getAvailableThemes(): { name: Theme; displayText: string }[] {
+  getAvailableThemes(): { name: Theme; displayText: string; icon: string }[] {
     return this.themes;
   }
 }

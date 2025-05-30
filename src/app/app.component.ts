@@ -1,51 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService, Theme } from './services/theme.service';
 import { CommonModule } from '@angular/common';
+import { IconComponent } from '../features/ui/atoms/icon/icon.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, IconComponent],
+  encapsulation: ViewEncapsulation.None,
   template: `
     <main class="flex flex-col h-screen gap-1">
       <header
-        class="bg-elevation-level-3 h-14 flex items-center justify-between px-3 border-b border-elevation-border"
+        class="bg-elevation-level-3 h-14 flex items-center justify-between border-b border-elevation-border"
       >
-        <h1 class="text-text-default text-2xl font-semibold">
+        <h1 class="text-text-default text-2xl font-semibold px-4">
           🎛️ _{{ title }}
         </h1>
-        <div class="relative">
+        <div class="relative h-full flex items-center">
           <button
             (click)="toggleThemeDropdown()"
-            class="px-2 flex items-center mt-1 py-1 rounded-md border border-elevation-border text-text-default hover:bg-elevation-level-2 focus:outline-none"
+            class="focus:outline-none flex items-center justify-center px-5 h-full hover:bg-primary-shaded-200 hover:cursor-pointer"
+            [ngClass]="{
+              'bg-primary-shaded-200 text-primary-default': isThemeDropdownOpen
+            }"
           >
-            {{ currentThemeDisplayName }}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 inline-block ml-1 transition-transform duration-200"
-              [ngClass]="{ 'rotate-180': isThemeDropdownOpen }"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            <app-icon [name]="currentThemeIcon" />
+            <!-- {{ currentThemeDisplayName }} -->
           </button>
-          <div
-            *ngIf="isThemeDropdownOpen"
-            class="absolute right-0 mt-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-lg p-1 z-50 border border-elevation-border"
-          >
+          <div *ngIf="isThemeDropdownOpen" class="theme-dropdown-menu">
             <a
               *ngFor="let theme of availableThemes"
               (click)="selectTheme(theme.name)"
-              class="block px-4 py-2 text-sm text-text-default hover:bg-secondary-default cursor-pointer"
-              [class.bg-primary-shaded-100.text-primary-default]="
-                theme.name === currentTheme
-              "
+              class="theme-dropdown-item"
+              [class.item-active]="theme.name === currentTheme"
             >
+              <app-icon [name]="theme.icon" />
               {{ theme.displayText }}
             </a>
           </div>
@@ -57,14 +46,28 @@ import { CommonModule } from '@angular/common';
     </main>
   `,
   styles: `
+    @import '../styles.css';
+    .theme-dropdown-menu {
+      @apply absolute top-[calc(100%+4px)] right-1 shadow-elevation-shadow w-48 bg-elevation-level-1 rounded-md shadow-lg flex flex-col gap-2 p-2 z-50 border border-elevation-border;
+    }
+    .theme-dropdown-item {
+      @apply flex items-center gap-2 px-2 h-8 rounded-sm text-sm;
+      &:hover {
+        @apply bg-secondary-dark cursor-pointer;
+      }
+    }
+    .item-active {
+      @apply bg-primary-shaded-200 text-primary-default;
+    }
   `,
 })
 export class AppComponent implements OnInit {
   title = 'FormGen 1.1';
   isThemeDropdownOpen = false;
-  availableThemes: { name: Theme; displayText: string }[] = [];
+  availableThemes: { name: Theme; displayText: string; icon: string }[] = [];
   currentTheme: Theme = 'light';
   currentThemeDisplayName: string = 'Светлая';
+  currentThemeIcon: string = '';
 
   constructor(private themeService: ThemeService) {}
 
@@ -72,9 +75,9 @@ export class AppComponent implements OnInit {
     this.availableThemes = this.themeService.getAvailableThemes();
     this.themeService.currentTheme$.subscribe((theme) => {
       this.currentTheme = theme;
-      this.currentThemeDisplayName =
-        this.availableThemes.find((t) => t.name === theme)?.displayText ||
-        theme;
+      const themeDetails = this.availableThemes.find((t) => t.name === theme);
+      this.currentThemeDisplayName = themeDetails?.displayText || theme;
+      this.currentThemeIcon = themeDetails?.icon || '';
     });
   }
 
