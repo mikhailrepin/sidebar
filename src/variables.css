@@ -188,7 +188,7 @@
   --color-elevation-black: oklch(18% 0.01 240);
   --color-elevation-invert: oklch(93% 0.03 230);
   --color-elevation-contrasted: oklch(18% 0.01 240);
-  --color-elevation-border: oklch(30% 0.04 250);
+  --color-elevation-border: oklch(37% 0.04 250);
   --color-elevation-shadow: oklch(10% 0.01 250 / 0.64);
   --color-elevation-shadow-transparent: oklch(10% 0.01 250 / 0);
 

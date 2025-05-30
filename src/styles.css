@@ -28,9 +28,9 @@ input[type="email"],
 input[type="number"],
 input[type="search"],
 select {
-  @apply w-full h-8 rounded-[4px] bg-secondary-default border border-elevation-border px-2;
+  @apply w-full h-8 rounded-[4px] bg-secondary-default border border-elevation-border px-2 text-nowrap text-ellipsis;
   &:disabled {
-    @apply text-text-disabled bg-elevation-level-1;
+    @apply text-text-default/60 !bg-text-disabled/50 !border-text-shaded/40;
   }
   &:focus {
     @apply border-primary-default outline-none bg-elevation-contrasted/10;

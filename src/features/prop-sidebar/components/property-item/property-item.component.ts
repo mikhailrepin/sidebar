@@ -114,13 +114,13 @@ import {
           ></ui-toggle>
 
           <!-- Readonly -->
-          <div *ngSwitchCase="'readonly'" class="flex flex-col">
-            <div
-              class="w-full rounded-md border border-elevation-border bg-secondary-default h-8 px-2 flex items-center text-sm text-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
-            >
-              {{ property.value }}
-            </div>
-          </div>
+          <ui-input
+            *ngSwitchCase="'readonly'"
+            [id]="property.id"
+            [value]="property.value?.toString() ?? ''"
+            [disabled]="true"
+            [readonly]="true"
+          ></ui-input>
 
           <!-- Fallback for unknown type -->
           <div *ngSwitchDefault class="text-sm text-danger-default">
