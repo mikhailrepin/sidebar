@@ -30,3 +30,8 @@ input[type="search"],
 select {
   @apply w-full h-8 rounded-[4px] bg-secondary-default border border-elevation-border px-2 focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default disabled:bg-elevation-level-1 disabled:text-text-disabled;
 }
+
+/* Стиль для полей ввода с иконкой слева */
+.input-with-icon-left {
+  @apply !pl-8 pr-3; /* Комплексные отступы: вертикальные, левый для иконки, правый */
+}

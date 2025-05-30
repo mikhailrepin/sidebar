@@ -92,7 +92,7 @@ import {
           </div>
           <input
             type="text"
-            class="block w-full rounded-md border-elevation-border bg-elevation-level-0 py-2 pl-10 pr-3 text-sm placeholder-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
+            class="block w-full rounded-md border-elevation-border bg-elevation-level-0 input-with-icon-left text-sm placeholder-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
             placeholder="Поиск свойств..."
             (input)="onSearch($event)"
           />
