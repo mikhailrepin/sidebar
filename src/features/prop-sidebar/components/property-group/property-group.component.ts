@@ -52,17 +52,12 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
               clip-rule="evenodd"
             />
           </svg>
-          <div *ngIf="!isAccordion()" class="h-5 w-5"></div>
         </div>
         <h3 class="text-sm font-medium text-text-default w-full">
           {{ group.title }}
         </h3>
       </div>
-      <div
-        *ngIf="!isAccordion() || isExpanded"
-        class="flex flex-col gap-3 p-4"
-        [class.pt-0]="!isAccordion()"
-      >
+      <div *ngIf="!isAccordion() || isExpanded" class="flex flex-col gap-3 p-4">
         <ng-container
           *ngFor="let property of group.properties; trackBy: trackByPropertyId"
         >
