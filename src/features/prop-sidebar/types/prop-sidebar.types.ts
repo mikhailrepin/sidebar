@@ -98,6 +98,7 @@ export interface PropertyGroup {
 export interface SidebarPanelConfig {
   id: string;
   title: string;
+  icon?: string;
   groups: PropertyGroup[];
   minWidth?: number;
   maxWidth?: number;

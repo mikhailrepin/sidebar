@@ -54,8 +54,9 @@ import { IconComponent } from '../../../ui/atoms/icon/icon.component';
         class="flex h-12 items-center justify-between border-b border-elevation-border bg-elevation-level-2 px-3 flex-shrink-0"
       >
         <h2
-          class="text-lg font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden"
+          class="text-lg font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden flex items-center gap-2"
         >
+          <app-icon [name]="config.icon || 'config'" />
           {{ config.title }}
         </h2>
         <div class="flex items-center space-x-2">

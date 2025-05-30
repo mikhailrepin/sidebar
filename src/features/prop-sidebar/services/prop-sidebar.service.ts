@@ -49,6 +49,7 @@ export class PropSidebarService {
     return {
       id: data.id,
       title: data.title,
+      icon: data.icon,
       groups: this.processGroups(data.groups),
       minWidth: data.minWidth,
       maxWidth: data.maxWidth,
