@@ -24,15 +24,14 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
               'bg-primary-shaded-200 text-primary-default': isThemeDropdownOpen
             }"
           >
-            <app-icon [name]="currentThemeIcon" />
-            <!-- {{ currentThemeDisplayName }} -->
+            <app-icon [name]="selectedThemeIcon" />
           </button>
           <div *ngIf="isThemeDropdownOpen" class="theme-dropdown-menu">
             <a
               *ngFor="let theme of availableThemes"
               (click)="selectTheme(theme.name)"
               class="theme-dropdown-item"
-              [class.item-active]="theme.name === currentTheme"
+              [class.item-active]="theme.name === userSelectedThemePreference"
             >
               <app-icon [name]="theme.icon" />
               {{ theme.displayText }}
@@ -65,20 +64,57 @@ export class AppComponent implements OnInit {
   title = 'FormGen 1.1';
   isThemeDropdownOpen = false;
   availableThemes: { name: Theme; displayText: string; icon: string }[] = [];
-  currentTheme: Theme = 'light';
-  currentThemeDisplayName: string = 'Светлая';
-  currentThemeIcon: string = '';
+
+  // Tracks the theme the user explicitly selected from the dropdown (e.g., 'system', 'light')
+  userSelectedThemePreference: Theme = 'light';
+  // Tracks the icon to display on the button, based on userSelectedThemePreference or the actual theme if 'system' is chosen
+  selectedThemeIcon: string = '';
 
   constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.availableThemes = this.themeService.getAvailableThemes();
-    this.themeService.currentTheme$.subscribe((theme) => {
-      this.currentTheme = theme;
-      const themeDetails = this.availableThemes.find((t) => t.name === theme);
-      this.currentThemeDisplayName = themeDetails?.displayText || theme;
-      this.currentThemeIcon = themeDetails?.icon || '';
+    this.userSelectedThemePreference =
+      this.themeService.getInitialUserPreference();
+    this.updateButtonIcon(this.userSelectedThemePreference);
+
+    this.themeService.currentTheme$.subscribe((actuallyAppliedTheme) => {
+      // currentTheme$ now gives the theme that is *actually* applied (e.g., 'light' or 'dark', never 'system').
+      // We don't need to update userSelectedThemePreference here because that reflects the user's choice (which might be 'system').
+      // We only need to update the icon if 'system' was selected, to reflect the actual theme.
+      console.log(
+        'AppComponent: Applied theme changed to:',
+        actuallyAppliedTheme
+      );
+      if (this.userSelectedThemePreference === 'system') {
+        this.updateButtonIcon('system'); // This will resolve to the correct light/dark icon
+      }
     });
+  }
+
+  private updateButtonIcon(themePreference: Theme): void {
+    let iconName = '';
+    if (themePreference === 'system') {
+      // If system is preferred, icon should be based on the *actually applied* theme (light/dark)
+      const actualTheme = this.themeService.getCurrentTheme(); // Get the resolved theme (light/dark)
+      const themeDetails = this.availableThemes.find(
+        (t) => t.name === actualTheme
+      );
+      iconName = themeDetails?.icon || 'theme-system'; // Fallback to system icon if something is off
+    } else {
+      // For specific themes, use their direct icon
+      const themeDetails = this.availableThemes.find(
+        (t) => t.name === themePreference
+      );
+      iconName = themeDetails?.icon || '';
+    }
+    this.selectedThemeIcon = iconName;
+    console.log(
+      'AppComponent: Button icon updated to:',
+      this.selectedThemeIcon,
+      'based on preference:',
+      themePreference
+    );
   }
 
   toggleThemeDropdown(): void {
@@ -86,7 +122,9 @@ export class AppComponent implements OnInit {
   }
 
   selectTheme(themeName: Theme): void {
+    this.userSelectedThemePreference = themeName;
     this.themeService.setTheme(themeName);
+    this.updateButtonIcon(themeName);
     this.isThemeDropdownOpen = false;
   }
 }
