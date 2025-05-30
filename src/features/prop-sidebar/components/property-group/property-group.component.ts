@@ -2,17 +2,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PropertyGroup, PropertyItem } from '../../types/prop-sidebar.types';
 import { PropertyItemComponent } from '../property-item/property-item.component';
+import { IconComponent } from '../../../ui/atoms/icon/icon.component';
 
 @Component({
   selector: 'app-property-group',
   standalone: true,
-  imports: [CommonModule, PropertyItemComponent],
+  imports: [CommonModule, PropertyItemComponent, IconComponent],
   template: `
     <div
       class=" rounded-md border border-elevation-border bg-elevation-level-2"
     >
       <div
-        class="flex gap-2 items-center justify-between bg-secondary-default px-2 py-2"
+        class="flex items-center justify-between bg-secondary-default px-2 py-2"
         [class.cursor-pointer]="isAccordion()"
         [ngClass]="{
           'rounded-t-md border-b border-elevation-border':
@@ -22,19 +23,17 @@ import { PropertyItemComponent } from '../property-item/property-item.component'
         (click)="toggleExpanded()"
       >
         <!-- accordion icon -->
-        <svg
+        <app-icon
           *ngIf="isAccordion()"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 transform transition-transform duration-200"
-          [ngClass]="{ 'rotate-90': isExpanded }"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-        >
-          <path fill-rule="evenodd" d="m6 14 6-6-6-6v12Z" clip-rule="evenodd" />
-        </svg>
+          name="chevron-right-small-fill"
+          [ngClass]="{
+            'transition-transform duration-200': isAccordion(),
+            'rotate-90': isExpanded
+          }"
+        />
         <!-- group title -->
         <h3
-          class="text-sm font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden"
+          class="px-1 text-sm font-medium text-text-default w-full text-nowrap text-ellipsis overflow-hidden"
         >
           {{ group.title }}
         </h3>
