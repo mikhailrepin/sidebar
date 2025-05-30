@@ -75,10 +75,10 @@ import {
       <div class="border-b border-elevation-border px-3 py-2 flex-shrink-0">
         <div class="relative">
           <div
-            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5"
           >
             <svg
-              class="h-4 w-4 text-text-disabled"
+              class="h-4 w-4 text-text-shaded"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -92,7 +92,7 @@ import {
           </div>
           <input
             type="text"
-            class="block w-full rounded-md border-elevation-border bg-elevation-level-0 input-with-icon-left text-sm placeholder-text-disabled focus:border-primary-default focus:outline-none focus:ring-1 focus:ring-primary-default"
+            class="input-with-icon-left"
             placeholder="Поиск свойств..."
             (input)="onSearch($event)"
           />
