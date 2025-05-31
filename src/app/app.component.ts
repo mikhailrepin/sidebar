@@ -21,9 +21,16 @@ import { IconComponent } from '../features/ui/atoms/icon/icon.component';
       <header
         class="bg-elevation-level-3 h-14 flex items-center justify-between border-b border-elevation-border"
       >
-        <h1 class="text-text-default text-2xl font-semibold px-4">
-          🎛️ _{{ title }}
-        </h1>
+        <div
+          class="text-text-default text-2xl font-semibold px-4 flex items-center gap-2"
+        >
+          <img
+            src="./favicon.ico"
+            alt="FormGen"
+            class="w-9 h-9 bg-primary-default/10 p-1.5 rounded-3xl border border-primary-default/50"
+          />
+          {{ title }}
+        </div>
         <div #themeDropdownContainer class="relative h-full flex items-center">
           <button
             #themeButton

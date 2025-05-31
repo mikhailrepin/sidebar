@@ -73,20 +73,12 @@ import { IconComponent } from '../../../ui/atoms/icon/icon.component';
       <div class="border-b border-elevation-border px-3 py-2 flex-shrink-0">
         <div class="relative">
           <div
-            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5"
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2"
           >
-            <svg
-              class="h-4 w-4 text-text-shaded"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            <app-icon
+              customClass="text-text-shaded"
+              name="glass-search-outline"
+            />
           </div>
           <input
             type="text"
